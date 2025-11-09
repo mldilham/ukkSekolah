@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id('id_user'); // kolom utama auto increment
             $table->string('nama', 100); // ubah jadi string
-            $table->string('kontak', 13)->nullable();
+            $table->string('kontak', 13)->nullable()->unique();
             $table->string('username', 20)->unique();
             $table->string('password', 100);
             $table->enum('role', ['admin', 'member'])->default('member');

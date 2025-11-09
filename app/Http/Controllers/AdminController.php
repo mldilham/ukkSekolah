@@ -114,13 +114,23 @@ class AdminController extends Controller
         $request->validate([
             'nama_toko' => 'required|string|max:100',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|string|max:100',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'id_user' => 'required|exists:users,id_user',
             'kontak_toko' => 'required|string|max:13',
             'alamat' => 'required|string',
         ]);
 
-        Toko::create($request->all());
+        $data = $request->all();
+
+        // Cek jika ada file gambar diunggah
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/tokos', $filename);
+            $data['gambar'] = $filename;
+        }
+
+        Toko::create($data);
 
         return redirect()->route('admin.tokos.index')->with('success', 'Toko berhasil ditambahkan.');
     }
@@ -139,13 +149,29 @@ class AdminController extends Controller
         $request->validate([
             'nama_toko' => 'required|string|max:100',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|string|max:100',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'id_user' => 'required|exists:users,id_user',
             'kontak_toko' => 'required|string|max:13',
             'alamat' => 'required|string',
         ]);
 
-        $toko->update($request->all());
+        $data = $request->except('gambar');
+
+        // Jika user mengunggah gambar baru
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($toko->gambar && file_exists(storage_path('app/public/tokos/' . $toko->gambar))) {
+                unlink(storage_path('app/public/tokos/' . $toko->gambar));
+            }
+
+            // Simpan gambar baru
+            $file = $request->file('gambar');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/tokos', $filename);
+            $data['gambar'] = $filename;
+        }
+
+        $toko->update($data);
 
         return redirect()->route('admin.tokos.index')->with('success', 'Toko berhasil diperbarui.');
     }

@@ -15,7 +15,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Edit Toko</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.tokos.update', $toko->id_toko) }}" method="POST">
+                    <form action="{{ route('admin.tokos.update', $toko->id_toko) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -35,12 +35,20 @@
                             @enderror
                         </div>
 
+                        <!-- Gambar -->
                         <div class="form-group">
-                            <label for="gambar">Gambar (URL)</label>
-                            <input type="text" class="form-control @error('gambar') is-invalid @enderror" id="gambar" name="gambar" value="{{ old('gambar', $toko->gambar) }}">
+                            <label for="gambar">Logo / Banner Toko</label>
+                            <input type="file" class="form-control-file @error('gambar') is-invalid @enderror" id="gambar" name="gambar" accept="image/*">
                             @error('gambar')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
+
+                            @if($toko->gambar)
+                                <div class="mt-2">
+                                    <p>Gambar saat ini:</p>
+                                    <img src="{{ asset('storage/tokos/' . $toko->gambar) }}" alt="Gambar Toko" class="img-thumbnail" width="150">
+                                </div>
+                            @endif
                         </div>
 
                         <div class="form-group">

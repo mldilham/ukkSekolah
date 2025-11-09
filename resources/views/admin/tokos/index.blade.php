@@ -19,6 +19,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Logo / Banner</th>
                             <th>Nama Toko</th>
                             <th>Pemilik</th>
                             <th>Kontak Toko</th>
@@ -30,6 +31,15 @@
                         @foreach($tokos as $toko)
                         <tr>
                             <td>{{ $toko->id_toko }}</td>
+                            <td>
+                                @if($toko->gambar)
+                                    <img src="{{ asset('storage/' . $toko->gambar->first()->nama_gambar) }}"
+                                         alt="Gambar" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                @else
+                                    <span class="text-muted">Tidak ada gambar</span>
+                                @endif
+                            </td>
+
                             <td>{{ $toko->nama_toko }}</td>
                             <td>{{ $toko->user->nama ?? 'N/A' }}</td>
                             <td>{{ $toko->kontak_toko }}</td>

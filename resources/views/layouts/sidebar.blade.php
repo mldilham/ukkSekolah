@@ -29,13 +29,13 @@
             <li class="nav-item {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.users') }}">
                     <i class="fas fa-fw fa-users"></i>
-                    <span>Users</span></a>
+                    <span>Pengguna</span></a>
             </li>
             <!-- Nav Item - Tokos -->
             <li class="nav-item {{ request()->routeIs('admin.tokos*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.tokos.index') }}">
                     <i class="fas fa-fw fa-store"></i>
-                    <span>Tokos</span></a>
+                    <span>Toko</span></a>
             </li>
             <!-- Nav Item - Kategori -->
             <li class="nav-item {{ request()->routeIs('admin.kategoris*') ? 'active' : '' }}">
@@ -47,13 +47,13 @@
             <li class="nav-item {{ request()->routeIs('admin.produks*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.produks.index') }}">
                     <i class="fas fa-fw fa-box"></i>
-                    <span>Produks</span></a>
+                    <span>Produk</span></a>
             </li>
             <!-- Nav Item - Gambar Produks -->
             <li class="nav-item {{ request()->routeIs('admin.gambar_produks*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.gambar_produks.index') }}">
                     <i class="fas fa-fw fa-images"></i>
-                    <span>Gambar Produks</span></a>
+                    <span>Gambar Produk</span></a>
             </li>
 
             <!-- Divider -->
