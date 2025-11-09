@@ -2,10 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// ===============================
+// 🔐 AUTHENTICATION ROUTES
+// ===============================
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Dashboard umum
 Route::get('/dashboard', function () {
@@ -15,7 +25,7 @@ Route::get('/dashboard', function () {
 // ===============================
 // 📦 ROUTES UNTUK ADMIN
 // ===============================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
     // Dashboard Admin
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
@@ -71,4 +81,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/gambar-produks/{id}/edit', [AdminController::class, 'editGambarProduk'])->name('gambar_produks.edit');
     Route::put('/gambar-produks/{id}', [AdminController::class, 'updateGambarProduk'])->name('gambar_produks.update');
     Route::delete('/gambar-produks/{id}', [AdminController::class, 'destroyGambarProduk'])->name('gambar_produks.destroy');
+});
+
+// ===============================
+// 👤 ROUTES UNTUK MEMBER
+// ===============================
+Route::prefix('member')->name('member.')->middleware('role:member')->group(function () {
+    // Dashboard Member
+    Route::get('/dashboard', function () {
+        return view('member.dashboard');
+    })->name('dashboard');
+
+    // TODO: Tambahkan routes untuk member (toko dan produk management)
 });

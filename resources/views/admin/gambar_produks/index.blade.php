@@ -34,7 +34,7 @@
                                 <a href="{{ route('admin.gambar_produks.edit', $gambarProduk->id_gambar) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.gambar_produks.delete', $gambarProduk->id_gambar) }}" method="POST" class="d-inline">
+                                <form action="{{ route('admin.gambar_produks.destroy', $gambarProduk->id_gambar) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus gambar produk ini?')">

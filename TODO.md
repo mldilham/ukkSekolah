@@ -27,6 +27,8 @@
 -   [x] admin/produks/index.blade.php - List produks
 -   [x] admin/produks/create.blade.php - Form create produk
 -   [x] admin/produks/edit.blade.php - Form edit produk
+-   [x] Tambahkan pencarian dan filter pada index produks
+-   [x] Tampilkan gambar produk di tabel index
 
 ## Gambar Produks
 

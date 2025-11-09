@@ -8,10 +8,55 @@
         </a>
     </div>
 
+    <!-- Search and Filter -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Pencarian & Filter</h6>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.produks.index') }}" class="row g-3">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Cari Nama Produk</label>
+                    <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Masukkan nama produk...">
+                </div>
+                <div class="col-md-3">
+                    <label for="kategori" class="form-label">Filter Kategori</label>
+                    <select class="form-control" id="kategori" name="kategori">
+                        <option value="">Semua Kategori</option>
+                        @foreach($kategoris as $kategori)
+                            <option value="{{ $kategori->id_kategori }}" {{ request('kategori') == $kategori->id_kategori ? 'selected' : '' }}>
+                                {{ $kategori->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="toko" class="form-label">Filter Toko</label>
+                    <select class="form-control" id="toko" name="toko">
+                        <option value="">Semua Toko</option>
+                        @foreach($tokos as $toko)
+                            <option value="{{ $toko->id_toko }}" {{ request('toko') == $toko->id_toko ? 'selected' : '' }}>
+                                {{ $toko->nama_toko }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                    <a href="{{ route('admin.produks.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Daftar Produks</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Daftar Produks ({{ $produks->total() }} produk)</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -19,6 +64,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Gambar</th>
                             <th>Nama Produk</th>
                             <th>Kategori</th>
                             <th>Toko</th>
@@ -32,6 +78,14 @@
                         @foreach($produks as $produk)
                         <tr>
                             <td>{{ $produk->id_produk }}</td>
+                            <td>
+                                @if($produk->gambarProduks->count() > 0)
+                                    <img src="{{ asset('storage/' . $produk->gambarProduks->first()->nama_gambar) }}"
+                                         alt="Gambar Produk" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                @else
+                                    <span class="text-muted">Tidak ada gambar</span>
+                                @endif
+                            </td>
                             <td>{{ $produk->nama_produk }}</td>
                             <td>{{ $produk->kategori->nama_kategori ?? 'N/A' }}</td>
                             <td>{{ $produk->toko->nama_toko ?? 'N/A' }}</td>
@@ -39,10 +93,10 @@
                             <td>{{ $produk->stok }}</td>
                             <td>{{ $produk->tanggal_upload->format('d/m/Y') }}</td>
                             <td>
-                                <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning">
+                                <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning mb-1">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.produks.delete', $produk->id_produk) }}" method="POST" class="d-inline">
+                                <form action="{{ route('admin.produks.destroy', $produk->id_produk) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
@@ -54,6 +108,11 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center">
+                {{ $produks->appends(request()->query())->links() }}
             </div>
         </div>
     </div>

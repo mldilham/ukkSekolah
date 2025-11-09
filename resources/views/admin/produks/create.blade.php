@@ -3,7 +3,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tambah Produk Baru</h1>
-        <a href="{{ route('admin.produks') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <a href="{{ route('admin.produks.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
             <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali
         </a>
     </div>
@@ -15,7 +15,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Tambah Produk</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.produks.store') }}" method="POST">
+                    <form action="{{ route('admin.produks.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group">
@@ -88,8 +88,17 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="gambar_produk">Gambar Produk (Opsional)</label>
+                            <input type="file" class="form-control @error('gambar_produk') is-invalid @enderror" id="gambar_produk" name="gambar_produk" accept="image/*">
+                            <small class="form-text text-muted">Pilih gambar untuk produk ini (format: JPG, PNG, GIF)</small>
+                            @error('gambar_produk')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Simpan</button>
-                        <a href="{{ route('admin.produks') }}" class="btn btn-secondary">Batal</a>
+                        <a href="{{ route('admin.produks.index') }}" class="btn btn-secondary">Batal</a>
                     </form>
                 </div>
             </div>

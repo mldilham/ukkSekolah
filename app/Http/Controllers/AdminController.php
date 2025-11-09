@@ -178,7 +178,7 @@ class AdminController extends Controller
 
         Kategori::create($request->all());
 
-        return redirect()->route('admin.kategoris')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('admin.kategoris.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function editKategori($id_kategori)
@@ -209,10 +209,30 @@ class AdminController extends Controller
     /** ---------------------------
      *  PRODUK MANAGEMENT
      *  --------------------------- */
-    public function indexProduk()
+    public function indexProduk(Request $request)
     {
-        $produks = Produk::with('kategori', 'toko')->get();
-        return view('admin.produks.index', compact('produks'));
+        $query = Produk::with('kategori', 'toko', 'gambarProduks');
+
+        // Pencarian berdasarkan nama produk
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('nama_produk', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter berdasarkan kategori
+        if ($request->has('kategori') && !empty($request->kategori)) {
+            $query->where('id_kategori', $request->kategori);
+        }
+
+        // Filter berdasarkan toko
+        if ($request->has('toko') && !empty($request->toko)) {
+            $query->where('id_toko', $request->toko);
+        }
+
+        $produks = $query->paginate(10);
+        $kategoris = Kategori::all();
+        $tokos = Toko::all();
+
+        return view('admin.produks.index', compact('produks', 'kategoris', 'tokos'));
     }
 
     public function createProduk()
@@ -232,11 +252,24 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'tanggal_upload' => 'required|date',
             'id_toko' => 'required|exists:tokos,id_toko',
+            'gambar_produk' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Produk::create($request->all());
+        $produk = Produk::create($request->except('gambar_produk'));
 
-        return redirect()->route('admin.produks')->with('success', 'Produk berhasil ditambahkan.');
+        // Handle file upload jika ada gambar
+        if ($request->hasFile('gambar_produk')) {
+            $file = $request->file('gambar_produk');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('produk_images', $filename, 'public');
+
+            GambarProduk::create([
+                'id_produk' => $produk->id_produk,
+                'nama_gambar' => $path,
+            ]);
+        }
+
+        return redirect()->route('admin.produks.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     public function editProduk($id_produk)
@@ -259,17 +292,48 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
             'tanggal_upload' => 'required|date',
             'id_toko' => 'required|exists:tokos,id_toko',
+            'gambar_produk' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $produk->update($request->all());
+        $produk->update($request->except('gambar_produk'));
 
-        return redirect()->route('admin.produks')->with('success', 'Produk berhasil diperbarui.');
+        // Handle file upload jika ada gambar baru
+        if ($request->hasFile('gambar_produk')) {
+            // Hapus gambar lama jika ada
+            if ($produk->gambarProduks->count() > 0) {
+                $oldImage = $produk->gambarProduks->first();
+                \Storage::disk('public')->delete($oldImage->nama_gambar);
+                $oldImage->delete();
+            }
+
+            // Upload gambar baru
+            $file = $request->file('gambar_produk');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('produk_images', $filename, 'public');
+
+            GambarProduk::create([
+                'id_produk' => $produk->id_produk,
+                'nama_gambar' => $path,
+            ]);
+        }
+
+        return redirect()->route('admin.produks.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-    public function deleteProduk($id_produk)
+    public function destroyProduk($id_produk)
     {
-        Produk::findOrFail($id_produk)->delete();
-        return redirect()->route('admin.produks')->with('success', 'Produk berhasil dihapus.');
+        $produk = Produk::findOrFail($id_produk);
+
+        // Hapus gambar terkait jika ada
+        if ($produk->gambarProduks->count() > 0) {
+            foreach ($produk->gambarProduks as $gambar) {
+                \Storage::disk('public')->delete($gambar->nama_gambar);
+                $gambar->delete();
+            }
+        }
+
+        $produk->delete();
+        return redirect()->route('admin.produks.index')->with('success', 'Produk berhasil dihapus.');
     }
 
     /** ---------------------------
@@ -296,7 +360,7 @@ class AdminController extends Controller
 
         GambarProduk::create($request->all());
 
-        return redirect()->route('admin.gambar_produks')->with('success', 'Gambar produk berhasil ditambahkan.');
+        return redirect()->route('admin.gambar_produks.index')->with('success', 'Gambar produk berhasil ditambahkan.');
     }
 
     public function editGambarProduk($id_gambar_produk)
@@ -317,12 +381,12 @@ class AdminController extends Controller
 
         $gambarProduk->update($request->all());
 
-        return redirect()->route('admin.gambar_produks')->with('success', 'Gambar produk berhasil diperbarui.');
+        return redirect()->route('admin.gambar_produks.index')->with('success', 'Gambar produk berhasil diperbarui.');
     }
 
-    public function deleteGambarProduk($id_gambar_produk)
+    public function destroyGambarProduk($id_gambar_produk)
     {
         GambarProduk::findOrFail($id_gambar_produk)->delete();
-        return redirect()->route('admin.gambar_produks')->with('success', 'Gambar produk berhasil dihapus.');
+        return redirect()->route('admin.gambar_produks.index')->with('success', 'Gambar produk berhasil dihapus.');
     }
 }
