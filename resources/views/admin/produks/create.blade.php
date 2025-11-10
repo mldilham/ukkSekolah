@@ -81,17 +81,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tanggal_upload">Tanggal Upload</label>
-                            <input type="date" class="form-control @error('tanggal_upload') is-invalid @enderror" id="tanggal_upload" name="tanggal_upload" value="{{ old('tanggal_upload', date('Y-m-d')) }}" required>
-                            @error('tanggal_upload')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
                             <label for="gambar_produk">Gambar Produk (Opsional)</label>
                             <input type="file" class="form-control @error('gambar_produk') is-invalid @enderror" id="gambar_produk" name="gambar_produk" accept="image/*">
-                            <small class="form-text text-muted">Pilih gambar untuk produk ini (format: JPG, PNG, GIF)</small>
+                            <small class="form-text text-muted">Pilih gambar untuk produk ini (format: JPG, PNG, GIF, maksimal 2MB)</small>
                             @error('gambar_produk')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

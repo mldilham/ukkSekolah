@@ -81,7 +81,8 @@
                             <td>
                                 @if($produk->gambarProduks->count() > 0)
                                     <img src="{{ asset('storage/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                                         alt="Gambar Produk" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                         alt="Gambar Produk" class="img-thumbnail"
+                                         style="width: 60px; height: 60px; object-fit: cover;">
                                 @else
                                     <span class="text-muted">Tidak ada gambar</span>
                                 @endif

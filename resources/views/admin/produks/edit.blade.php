@@ -81,29 +81,6 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
-                            <label for="tanggal_upload">Tanggal Upload</label>
-                            <input type="date" class="form-control @error('tanggal_upload') is-invalid @enderror" id="tanggal_upload" name="tanggal_upload" value="{{ old('tanggal_upload', $produk->tanggal_upload->format('Y-m-d')) }}" required>
-                            @error('tanggal_upload')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="gambar_produk">Gambar Produk (Opsional)</label>
-                            @if($produk->gambarProduks->count() > 0)
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $produk->gambarProduks->first()->nama_gambar) }}" alt="Gambar Produk Saat Ini" width="100" height="100" class="img-thumbnail">
-                                    <small class="form-text text-muted d-block">Gambar saat ini</small>
-                                </div>
-                            @endif
-                            <input type="file" class="form-control @error('gambar_produk') is-invalid @enderror" id="gambar_produk" name="gambar_produk" accept="image/*">
-                            <small class="form-text text-muted">Pilih gambar baru untuk mengganti gambar yang ada (format: JPG, PNG, GIF)</small>
-                            @error('gambar_produk')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <button type="submit" class="btn btn-primary">Update</button>
                         <a href="{{ route('admin.produks.index') }}" class="btn btn-secondary">Batal</a>
                     </form>

@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TokoController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\GambarProdukController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,55 +37,55 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     // ===============================
     // 👤 USER MANAGEMENT
     // ===============================
-    Route::get('/users', [AdminController::class, 'indexUser'])->name('users.index');
-    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
-    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
-    Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
-    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
-    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Alias route untuk kompatibilitas
-    Route::get('/users', [AdminController::class, 'indexUser'])->name('users');
+    Route::get('/users', [UserController::class, 'index'])->name('users');
 
     // ===============================
     // 🏪 TOKO MANAGEMENT
     // ===============================
-    Route::get('/tokos', [AdminController::class, 'indexToko'])->name('tokos.index');
-    Route::get('/tokos/create', [AdminController::class, 'createToko'])->name('tokos.create');
-    Route::post('/tokos', [AdminController::class, 'storeToko'])->name('tokos.store');
-    Route::get('/tokos/{id}/edit', [AdminController::class, 'editToko'])->name('tokos.edit');
-    Route::put('/tokos/{id}', [AdminController::class, 'updateToko'])->name('tokos.update');
-    Route::delete('/tokos/{id}', [AdminController::class, 'destroyToko'])->name('tokos.destroy');
+    Route::get('/tokos', [TokoController::class, 'index'])->name('tokos.index');
+    Route::get('/tokos/create', [TokoController::class, 'create'])->name('tokos.create');
+    Route::post('/tokos', [TokoController::class, 'store'])->name('tokos.store');
+    Route::get('/tokos/{id}/edit', [TokoController::class, 'edit'])->name('tokos.edit');
+    Route::put('/tokos/{id}', [TokoController::class, 'update'])->name('tokos.update');
+    Route::delete('/tokos/{id}', [TokoController::class, 'destroy'])->name('tokos.destroy');
 
     // ===============================
     // 🏷️ KATEGORI MANAGEMENT
     // ===============================
-    Route::get('/kategoris', [AdminController::class, 'indexKategori'])->name('kategoris.index');
-    Route::get('/kategoris/create', [AdminController::class, 'createKategori'])->name('kategoris.create');
-    Route::post('/kategoris', [AdminController::class, 'storeKategori'])->name('kategoris.store');
-    Route::get('/kategoris/{id}/edit', [AdminController::class, 'editKategori'])->name('kategoris.edit');
-    Route::put('/kategoris/{id}', [AdminController::class, 'updateKategori'])->name('kategoris.update');
-    Route::delete('/kategoris/{id}', [AdminController::class, 'destroyKategori'])->name('kategoris.destroy');
+    Route::get('/kategoris', [KategoriController::class, 'index'])->name('kategoris.index');
+    Route::get('/kategoris/create', [KategoriController::class, 'create'])->name('kategoris.create');
+    Route::post('/kategoris', [KategoriController::class, 'store'])->name('kategoris.store');
+    Route::get('/kategoris/{id}/edit', [KategoriController::class, 'edit'])->name('kategoris.edit');
+    Route::put('/kategoris/{id}', [KategoriController::class, 'update'])->name('kategoris.update');
+    Route::delete('/kategoris/{id}', [KategoriController::class, 'destroy'])->name('kategoris.destroy');
 
     // ===============================
     // 📦 PRODUK MANAGEMENT
     // ===============================
-    Route::get('/produks', [AdminController::class, 'indexProduk'])->name('produks.index');
-    Route::get('/produks/create', [AdminController::class, 'createProduk'])->name('produks.create');
-    Route::post('/produks', [AdminController::class, 'storeProduk'])->name('produks.store');
-    Route::get('/produks/{id}/edit', [AdminController::class, 'editProduk'])->name('produks.edit');
-    Route::put('/produks/{id}', [AdminController::class, 'updateProduk'])->name('produks.update');
-    Route::delete('/produks/{id}', [AdminController::class, 'destroyProduk'])->name('produks.destroy');
+    Route::get('/produks', [ProdukController::class, 'index'])->name('produks.index');
+    Route::get('/produks/create', [ProdukController::class, 'create'])->name('produks.create');
+    Route::post('/produks', [ProdukController::class, 'store'])->name('produks.store');
+    Route::get('/produks/{id}/edit', [ProdukController::class, 'edit'])->name('produks.edit');
+    Route::put('/produks/{id}', [ProdukController::class, 'update'])->name('produks.update');
+    Route::delete('/produks/{id}', [ProdukController::class, 'destroy'])->name('produks.destroy');
 
     // ===============================
     // 🖼️ GAMBAR PRODUK MANAGEMENT
     // ===============================
-    Route::get('/gambar-produks', [AdminController::class, 'indexGambarProduk'])->name('gambar_produks.index');
-    Route::get('/gambar-produks/create', [AdminController::class, 'createGambarProduk'])->name('gambar_produks.create');
-    Route::post('/gambar-produks', [AdminController::class, 'storeGambarProduk'])->name('gambar_produks.store');
-    Route::get('/gambar-produks/{id}/edit', [AdminController::class, 'editGambarProduk'])->name('gambar_produks.edit');
-    Route::put('/gambar-produks/{id}', [AdminController::class, 'updateGambarProduk'])->name('gambar_produks.update');
-    Route::delete('/gambar-produks/{id}', [AdminController::class, 'destroyGambarProduk'])->name('gambar_produks.destroy');
+    Route::get('/gambar-produks', [GambarProdukController::class, 'index'])->name('gambar_produks.index');
+    Route::get('/gambar-produks/create', [GambarProdukController::class, 'create'])->name('gambar_produks.create');
+    Route::post('/gambar-produks', [GambarProdukController::class, 'store'])->name('gambar_produks.store');
+    Route::get('/gambar-produks/{id}/edit', [GambarProdukController::class, 'edit'])->name('gambar_produks.edit');
+    Route::put('/gambar-produks/{id}', [GambarProdukController::class, 'update'])->name('gambar_produks.update');
+    Route::delete('/gambar-produks/{id}', [GambarProdukController::class, 'destroy'])->name('gambar_produks.destroy');
 });
 
 // ===============================
