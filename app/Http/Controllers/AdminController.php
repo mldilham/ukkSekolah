@@ -8,28 +8,32 @@ use App\Models\Toko;
 use App\Models\Kategori;
 use App\Models\Produk;
 use App\Models\GambarProduk;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-    /** ---------------------------
-     *  DASHBOARD
-     *  --------------------------- */
+    // ===============================
+    // DASHBOARD
+    // ===============================
     public function dashboard()
     {
         $totalUsers = User::count();
         $totalTokos = Toko::count();
         $totalKategoris = Kategori::count();
         $totalProduks = Produk::count();
+        $totalGambarProduks = GambarProduk::count();
 
-        return view('admin.dashboard', compact('totalUsers', 'totalTokos', 'totalKategoris', 'totalProduks'));
+        return view('admin.dashboard', compact('totalUsers', 'totalTokos', 'totalKategoris', 'totalProduks', 'totalGambarProduks'));
     }
 
-    /** ---------------------------
-     *  USER MANAGEMENT
-     *  --------------------------- */
+    // ===============================
+    // USER MANAGEMENT
+    // ===============================
     public function indexUser()
     {
-        $users = User::all();
+        $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -41,71 +45,97 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'kontak' => 'required|string|max:13',
-            'username' => 'required|string|max:20|unique:users,username',
-            'password' => 'required|string|min:8',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'nama' => 'required|string|max:255',
+            'kontak' => 'nullable|string|max:13',
+            'username' => 'required|string|max:255|unique:users',
             'role' => 'required|in:admin,member',
         ]);
 
         User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'nama' => $request->nama,
             'kontak' => $request->kontak,
             'username' => $request->username,
-            'password' => bcrypt($request->password),
             'role' => $request->role,
         ]);
 
-        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User berhasil dibuat.');
     }
 
-    public function editUser($id_user)
+    public function editUser($id)
     {
-        $user = User::findOrFail($id_user);
+        $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
-    public function updateUser(Request $request, $id_user)
+    public function updateUser(Request $request, $id)
     {
-        $user = User::findOrFail($id_user);
+        $user = User::findOrFail($id);
 
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'kontak' => 'required|string|max:13',
-            'username' => 'required|string|max:20|unique:users,username,' . $id_user . ',id_user',
-            'password' => 'nullable|string|min:8',
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
+            'password' => 'nullable|string|min:8|confirmed',
+            'nama' => 'required|string|max:255',
+            'kontak' => 'nullable|string|max:13',
+            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
             'role' => 'required|in:admin,member',
         ]);
 
-        $user->update([
-            'nama' => $request->nama,
-            'kontak' => $request->kontak,
-            'username' => $request->username,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
-            'role' => $request->role,
-        ]);
+        $data = $request->except('password');
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
 
-        return redirect()->route('admin.users')->with('success', 'User berhasil diperbarui.');
+        $user->update($data);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User berhasil diperbarui.');
     }
 
-    public function destroyUser($id_user)
+    public function destroyUser($id)
     {
-        User::findOrFail($id_user)->delete();
-        return redirect()->route('admin.users')->with('success', 'User berhasil dihapus.');
+        $user = User::findOrFail($id);
+
+        // Hapus semua toko dan produk terkait
+        foreach ($user->tokos as $toko) {
+            foreach ($toko->produks as $produk) {
+                foreach ($produk->gambarProduks as $gambarProduk) {
+                    Storage::disk('public')->delete($gambarProduk->nama_gambar);
+                    $gambarProduk->delete();
+                }
+                $produk->delete();
+            }
+            if ($toko->gambar && Storage::exists('public/tokos/' . $toko->gambar)) {
+                Storage::delete('public/tokos/' . $toko->gambar);
+            }
+            $toko->delete();
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User dan semua data terkait berhasil dihapus.');
     }
 
-    /** ---------------------------
-     *  TOKO MANAGEMENT
-     *  --------------------------- */
+    // ===============================
+    // TOKO MANAGEMENT
+    // ===============================
     public function indexToko()
     {
-        $tokos = Toko::with('user')->get();
+        $tokos = Toko::with('user')->paginate(10);
         return view('admin.tokos.index', compact('tokos'));
     }
 
     public function createToko()
     {
-        $users = User::all();
+        $users = User::where('role', 'member')->get();
         return view('admin.tokos.create', compact('users'));
     }
 
@@ -122,7 +152,7 @@ class AdminController extends Controller
 
         $data = $request->all();
 
-        // Cek jika ada file gambar diunggah
+        // Handle upload gambar
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -132,19 +162,20 @@ class AdminController extends Controller
 
         Toko::create($data);
 
-        return redirect()->route('admin.tokos.index')->with('success', 'Toko berhasil ditambahkan.');
+        return redirect()->route('admin.tokos.index')
+            ->with('success', 'Toko berhasil dibuat.');
     }
 
-    public function editToko($id_toko)
+    public function editToko($id)
     {
-        $toko = Toko::findOrFail($id_toko);
-        $users = User::all();
+        $toko = Toko::findOrFail($id);
+        $users = User::where('role', 'member')->get();
         return view('admin.tokos.edit', compact('toko', 'users'));
     }
 
-    public function updateToko(Request $request, $id_toko)
+    public function updateToko(Request $request, $id)
     {
-        $toko = Toko::findOrFail($id_toko);
+        $toko = Toko::findOrFail($id);
 
         $request->validate([
             'nama_toko' => 'required|string|max:100',
@@ -157,14 +188,14 @@ class AdminController extends Controller
 
         $data = $request->except('gambar');
 
-        // Jika user mengunggah gambar baru
+        // Handle upload gambar baru
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama jika ada
-            if ($toko->gambar && file_exists(storage_path('app/public/tokos/' . $toko->gambar))) {
-                unlink(storage_path('app/public/tokos/' . $toko->gambar));
+            if ($toko->gambar && Storage::exists('public/tokos/' . $toko->gambar)) {
+                Storage::delete('public/tokos/' . $toko->gambar);
             }
 
-            // Simpan gambar baru
+            // Upload gambar baru
             $file = $request->file('gambar');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/tokos', $filename);
@@ -173,21 +204,40 @@ class AdminController extends Controller
 
         $toko->update($data);
 
-        return redirect()->route('admin.tokos.index')->with('success', 'Toko berhasil diperbarui.');
+        return redirect()->route('admin.tokos.index')
+            ->with('success', 'Toko berhasil diperbarui.');
     }
 
-    public function destroyToko($id_toko)
+    public function destroyToko($id)
     {
-        Toko::findOrFail($id_toko)->delete();
-        return redirect()->route('admin.tokos.index')->with('success', 'Toko berhasil dihapus.');
+        $toko = Toko::findOrFail($id);
+
+        // Hapus gambar toko jika ada
+        if ($toko->gambar && Storage::exists('public/tokos/' . $toko->gambar)) {
+            Storage::delete('public/tokos/' . $toko->gambar);
+        }
+
+        // Hapus semua produk dan gambar produk terkait
+        foreach ($toko->produks as $produk) {
+            foreach ($produk->gambarProduks as $gambarProduk) {
+                Storage::disk('public')->delete($gambarProduk->nama_gambar);
+                $gambarProduk->delete();
+            }
+            $produk->delete();
+        }
+
+        $toko->delete();
+
+        return redirect()->route('admin.tokos.index')
+            ->with('success', 'Toko dan semua produk terkait berhasil dihapus.');
     }
 
-    /** ---------------------------
-     *  KATEGORI MANAGEMENT
-     *  --------------------------- */
+    // ===============================
+    // KATEGORI MANAGEMENT
+    // ===============================
     public function indexKategori()
     {
-        $kategoris = Kategori::all();
+        $kategoris = Kategori::paginate(10);
         return view('admin.kategoris.index', compact('kategoris'));
     }
 
@@ -199,72 +249,66 @@ class AdminController extends Controller
     public function storeKategori(Request $request)
     {
         $request->validate([
-            'nama_kategori' => 'required|string|max:50',
+            'nama_kategori' => 'required|string|max:255|unique:kategoris',
         ]);
 
         Kategori::create($request->all());
 
-        return redirect()->route('admin.kategoris.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('admin.kategoris.index')
+            ->with('success', 'Kategori berhasil dibuat.');
     }
 
-    public function editKategori($id_kategori)
+    public function editKategori($id)
     {
-        $kategori = Kategori::findOrFail($id_kategori);
+        $kategori = Kategori::findOrFail($id);
         return view('admin.kategoris.edit', compact('kategori'));
     }
 
-    public function updateKategori(Request $request, $id_kategori)
+    public function updateKategori(Request $request, $id)
     {
-        $kategori = Kategori::findOrFail($id_kategori);
+        $kategori = Kategori::findOrFail($id);
 
         $request->validate([
-            'nama_kategori' => 'required|string|max:50',
+            'nama_kategori' => ['required', 'string', 'max:255', Rule::unique('kategoris')->ignore($kategori->id_kategori, 'id_kategori')],
         ]);
 
         $kategori->update($request->all());
 
-        return redirect()->route('admin.kategoris.index')->with('success', 'Kategori berhasil diperbarui.');
+        return redirect()->route('admin.kategoris.index')
+            ->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function destroyKategori($id_kategori)
+    public function destroyKategori($id)
     {
-        Kategori::findOrFail($id_kategori)->delete();
-        return redirect()->route('admin.kategoris.index')->with('success', 'Kategori berhasil dihapus.');
+        $kategori = Kategori::findOrFail($id);
+
+        // Cek apakah kategori masih digunakan oleh produk
+        if ($kategori->produks()->exists()) {
+            return redirect()->route('admin.kategoris.index')
+                ->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh produk.');
+        }
+
+        $kategori->delete();
+
+        return redirect()->route('admin.kategoris.index')
+            ->with('success', 'Kategori berhasil dihapus.');
     }
 
-    /** ---------------------------
-     *  PRODUK MANAGEMENT
-     *  --------------------------- */
-    public function indexProduk(Request $request)
+    // ===============================
+    // PRODUK MANAGEMENT
+    // ===============================
+    public function indexProduk()
     {
-        $query = Produk::with('kategori', 'toko', 'gambarProduks');
-
-        // Pencarian berdasarkan nama produk
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where('nama_produk', 'like', '%' . $request->search . '%');
-        }
-
-        // Filter berdasarkan kategori
-        if ($request->has('kategori') && !empty($request->kategori)) {
-            $query->where('id_kategori', $request->kategori);
-        }
-
-        // Filter berdasarkan toko
-        if ($request->has('toko') && !empty($request->toko)) {
-            $query->where('id_toko', $request->toko);
-        }
-
-        $produks = $query->paginate(10);
+        $produks = Produk::with(['kategori', 'toko.user'])->paginate(10);
         $kategoris = Kategori::all();
-        $tokos = Toko::all();
-
+        $tokos = Toko::with('user')->get();
         return view('admin.produks.index', compact('produks', 'kategoris', 'tokos'));
     }
 
     public function createProduk()
     {
         $kategoris = Kategori::all();
-        $tokos = Toko::all();
+        $tokos = Toko::with('user')->get();
         return view('admin.produks.create', compact('kategoris', 'tokos'));
     }
 
@@ -272,108 +316,77 @@ class AdminController extends Controller
     {
         $request->validate([
             'id_kategori' => 'required|exists:kategoris,id_kategori',
-            'nama_produk' => 'required|string|max:100',
-            'harga' => 'required|integer',
-            'stok' => 'required|integer',
+            'nama_produk' => 'required|string|max:255',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
-            'tanggal_upload' => 'required|date',
             'id_toko' => 'required|exists:tokos,id_toko',
-            'gambar_produk' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $produk = Produk::create($request->except('gambar_produk'));
+        $data = $request->all();
+        $data['tanggal_upload'] = now();
 
-        // Handle file upload jika ada gambar
-        if ($request->hasFile('gambar_produk')) {
-            $file = $request->file('gambar_produk');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('produk_images', $filename, 'public');
+        Produk::create($data);
 
-            GambarProduk::create([
-                'id_produk' => $produk->id_produk,
-                'nama_gambar' => $path,
-            ]);
-        }
-
-        return redirect()->route('admin.produks.index')->with('success', 'Produk berhasil ditambahkan.');
+        return redirect()->route('admin.produks.index')
+            ->with('success', 'Produk berhasil dibuat.');
     }
 
-    public function editProduk($id_produk)
+    public function editProduk($id)
     {
-        $produk = Produk::findOrFail($id_produk);
+        $produk = Produk::findOrFail($id);
         $kategoris = Kategori::all();
-        $tokos = Toko::all();
+        $tokos = Toko::with('user')->get();
         return view('admin.produks.edit', compact('produk', 'kategoris', 'tokos'));
     }
 
-    public function updateProduk(Request $request, $id_produk)
+    public function updateProduk(Request $request, $id)
     {
-        $produk = Produk::findOrFail($id_produk);
+        $produk = Produk::findOrFail($id);
 
         $request->validate([
             'id_kategori' => 'required|exists:kategoris,id_kategori',
-            'nama_produk' => 'required|string|max:100',
-            'harga' => 'required|integer',
-            'stok' => 'required|integer',
+            'nama_produk' => 'required|string|max:255',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
-            'tanggal_upload' => 'required|date',
             'id_toko' => 'required|exists:tokos,id_toko',
-            'gambar_produk' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $produk->update($request->except('gambar_produk'));
+        $produk->update($request->all());
 
-        // Handle file upload jika ada gambar baru
-        if ($request->hasFile('gambar_produk')) {
-            // Hapus gambar lama jika ada
-            if ($produk->gambarProduks->count() > 0) {
-                $oldImage = $produk->gambarProduks->first();
-                \Storage::disk('public')->delete($oldImage->nama_gambar);
-                $oldImage->delete();
-            }
-
-            // Upload gambar baru
-            $file = $request->file('gambar_produk');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('produk_images', $filename, 'public');
-
-            GambarProduk::create([
-                'id_produk' => $produk->id_produk,
-                'nama_gambar' => $path,
-            ]);
-        }
-
-        return redirect()->route('admin.produks.index')->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('admin.produks.index')
+            ->with('success', 'Produk berhasil diperbarui.');
     }
 
-    public function destroyProduk($id_produk)
+    public function destroyProduk($id)
     {
-        $produk = Produk::findOrFail($id_produk);
+        $produk = Produk::findOrFail($id);
 
-        // Hapus gambar terkait jika ada
-        if ($produk->gambarProduks->count() > 0) {
-            foreach ($produk->gambarProduks as $gambar) {
-                \Storage::disk('public')->delete($gambar->nama_gambar);
-                $gambar->delete();
-            }
+        // Hapus semua gambar produk terkait
+        foreach ($produk->gambarProduks as $gambarProduk) {
+            Storage::disk('public')->delete($gambarProduk->nama_gambar);
+            $gambarProduk->delete();
         }
 
         $produk->delete();
-        return redirect()->route('admin.produks.index')->with('success', 'Produk berhasil dihapus.');
+
+        return redirect()->route('admin.produks.index')
+            ->with('success', 'Produk dan gambar terkait berhasil dihapus.');
     }
 
-    /** ---------------------------
-     *  GAMBAR PRODUK MANAGEMENT
-     *  --------------------------- */
+    // ===============================
+    // GAMBAR PRODUK MANAGEMENT
+    // ===============================
     public function indexGambarProduk()
     {
-        $gambarProduks = GambarProduk::with('produk')->get();
+        $gambarProduks = GambarProduk::with(['produk.toko.user', 'produk.kategori'])->paginate(10);
         return view('admin.gambar_produks.index', compact('gambarProduks'));
     }
 
     public function createGambarProduk()
     {
-        $produks = Produk::all();
+        $produks = Produk::with(['toko.user', 'kategori'])->get();
         return view('admin.gambar_produks.create', compact('produks'));
     }
 
@@ -381,38 +394,69 @@ class AdminController extends Controller
     {
         $request->validate([
             'id_produk' => 'required|exists:produks,id_produk',
-            'nama_gambar' => 'required|string|max:50',
+            'nama_gambar' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        GambarProduk::create($request->all());
+        // Upload gambar
+        $file = $request->file('nama_gambar');
+        $filename = time() . '_' . $request->id_produk . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('public/produks', $filename);
 
-        return redirect()->route('admin.gambar_produks.index')->with('success', 'Gambar produk berhasil ditambahkan.');
+        GambarProduk::create([
+            'id_produk' => $request->id_produk,
+            'nama_gambar' => $filename,
+        ]);
+
+        return redirect()->route('admin.gambar_produks.index')
+            ->with('success', 'Gambar produk berhasil ditambahkan.');
     }
 
-    public function editGambarProduk($id_gambar_produk)
+    public function editGambarProduk($id)
     {
-        $gambarProduk = GambarProduk::findOrFail($id_gambar_produk);
-        $produks = Produk::all();
+        $gambarProduk = GambarProduk::findOrFail($id);
+        $produks = Produk::with(['toko.user', 'kategori'])->get();
         return view('admin.gambar_produks.edit', compact('gambarProduk', 'produks'));
     }
 
-    public function updateGambarProduk(Request $request, $id_gambar_produk)
+    public function updateGambarProduk(Request $request, $id)
     {
-        $gambarProduk = GambarProduk::findOrFail($id_gambar_produk);
+        $gambarProduk = GambarProduk::findOrFail($id);
 
         $request->validate([
             'id_produk' => 'required|exists:produks,id_produk',
-            'nama_gambar' => 'required|string|max:50',
+            'nama_gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $gambarProduk->update($request->all());
+        $data = ['id_produk' => $request->id_produk];
 
-        return redirect()->route('admin.gambar_produks.index')->with('success', 'Gambar produk berhasil diperbarui.');
+        // Handle upload gambar baru
+        if ($request->hasFile('nama_gambar')) {
+            // Hapus gambar lama
+            Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
+
+            // Upload gambar baru
+            $file = $request->file('nama_gambar');
+            $filename = time() . '_' . $request->id_produk . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/produks', $filename);
+            $data['nama_gambar'] = $filename;
+        }
+
+        $gambarProduk->update($data);
+
+        return redirect()->route('admin.gambar_produks.index')
+            ->with('success', 'Gambar produk berhasil diperbarui.');
     }
 
-    public function destroyGambarProduk($id_gambar_produk)
+    public function destroyGambarProduk($id)
     {
-        GambarProduk::findOrFail($id_gambar_produk)->delete();
-        return redirect()->route('admin.gambar_produks.index')->with('success', 'Gambar produk berhasil dihapus.');
+        $gambarProduk = GambarProduk::findOrFail($id);
+
+        // Hapus file gambar
+        Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
+
+        $gambarProduk->delete();
+
+        return redirect()->route('admin.gambar_produks.index')
+            ->with('success', 'Gambar produk berhasil dihapus.');
     }
 }

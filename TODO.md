@@ -35,3 +35,15 @@
 -   [x] admin/gambar_produks/index.blade.php - List gambar produks
 -   [x] admin/gambar_produks/create.blade.php - Form create gambar produk
 -   [x] admin/gambar_produks/edit.blade.php - Form edit gambar produk
+
+## Member Toko Management
+
+-   [x] MemberController.php - Controller untuk manajemen toko member
+-   [x] Routes untuk member toko management
+-   [x] member/tokos/index.blade.php - Halaman utama manajemen toko member
+-   [x] member/tokos/create.blade.php - Form buat toko baru
+-   [x] member/tokos/edit.blade.php - Form edit toko
+-   [x] member/tokos/show.blade.php - Profil publik toko
+-   [x] Validasi satu toko per member
+-   [x] Cascade delete produk saat hapus toko
+-   [x] File upload untuk gambar toko

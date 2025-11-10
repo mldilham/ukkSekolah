@@ -92,5 +92,20 @@ Route::prefix('member')->name('member.')->middleware('role:member')->group(funct
         return view('member.dashboard');
     })->name('dashboard');
 
-    // TODO: Tambahkan routes untuk member (toko dan produk management)
+    // ===============================
+    // 🏪 TOKO MANAGEMENT FOR MEMBERS
+    // ===============================
+    Route::get('/tokos', [App\Http\Controllers\MemberController::class, 'indexToko'])->name('tokos.index');
+    Route::get('/tokos/create', [App\Http\Controllers\MemberController::class, 'createToko'])->name('tokos.create');
+    Route::post('/tokos', [App\Http\Controllers\MemberController::class, 'storeToko'])->name('tokos.store');
+    Route::get('/tokos/edit', [App\Http\Controllers\MemberController::class, 'editToko'])->name('tokos.edit');
+    Route::put('/tokos', [App\Http\Controllers\MemberController::class, 'updateToko'])->name('tokos.update');
+    Route::delete('/tokos', [App\Http\Controllers\MemberController::class, 'destroyToko'])->name('tokos.destroy');
+
+    // Profil publik toko (akses tanpa middleware member)
 });
+
+// ===============================
+// 🏪 TOKO PUBLIC PROFILE (untuk semua user)
+// ===============================
+Route::get('/tokos/{id_toko}', [App\Http\Controllers\MemberController::class, 'showToko'])->name('tokos.show');
