@@ -75,8 +75,8 @@
                         <span>Toko Saya</span></a>
                 </li>
                 <!-- Nav Item - Produk Saya -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
+                <li class="nav-item {{ request()->routeIs('member.produks*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('member.produks.index') }}">
                         <i class="fas fa-fw fa-box"></i>
                         <span>Produk Saya</span></a>
                 </li>

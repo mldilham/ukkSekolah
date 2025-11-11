@@ -79,12 +79,10 @@
                         <tr>
                             <td>{{ $produk->id_produk }}</td>
                             <td>
-                                @if($produk->gambarProduks->count() > 0)
-                                    <img src="{{ asset('storage/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                                         alt="Gambar Produk" class="img-thumbnail"
-                                         style="width: 60px; height: 60px; object-fit: cover;">
+                                @if($produk->gambarProduks->isNotEmpty())
+                                    <img src="{{ Storage::url('produks/' . $produk->gambarProduks->first()->nama_gambar) }}" alt="{{ $produk->nama_produk }}" width="50" height="50" class="img-thumbnail">
                                 @else
-                                    <span class="text-muted">Tidak ada gambar</span>
+                                    <span class="text-muted">No Image</span>
                                 @endif
                             </td>
                             <td>{{ $produk->nama_produk }}</td>

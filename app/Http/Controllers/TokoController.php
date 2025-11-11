@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class TokoController extends Controller
 {
     // ===============================
-    // TOKO MANAGEMENT
+    // INDEX
     // ===============================
     public function index()
     {
@@ -18,12 +18,18 @@ class TokoController extends Controller
         return view('admin.tokos.index', compact('tokos'));
     }
 
+    // ===============================
+    // CREATE
+    // ===============================
     public function create()
     {
         $users = User::where('role', 'member')->get();
         return view('admin.tokos.create', compact('users'));
     }
 
+    // ===============================
+    // STORE
+    // ===============================
     public function store(Request $request)
     {
         $request->validate([
@@ -35,15 +41,20 @@ class TokoController extends Controller
             'alamat' => 'required|string',
         ]);
 
-        $data = $request->all();
+        // Cek apakah user sudah punya toko
+        if (Toko::where('id_user', $request->id_user)->exists()) {
+            return back()->withInput()->with('error', 'User ini sudah memiliki toko.');
+        }
 
-        // Handle upload gambar
-        // if ($request->hasFile('gambar')) {
-        //     $file = $request->file('gambar');
-        //     $filename = time() . '.' . $file->getClientOriginalExtension();
-        //     $file->storeAs('public/tokos', $filename);
-        //     $data['gambar'] = $filename;
-        // }
+        $data = $request->only(['nama_toko', 'deskripsi', 'id_user', 'kontak_toko', 'alamat']);
+
+        // Upload gambar jika ada
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('tokos', $filename, 'public');
+            $data['gambar'] = $filename;
+        }
 
         Toko::create($data);
 
@@ -51,6 +62,9 @@ class TokoController extends Controller
             ->with('success', 'Toko berhasil dibuat.');
     }
 
+    // ===============================
+    // EDIT
+    // ===============================
     public function edit($id)
     {
         $toko = Toko::findOrFail($id);
@@ -58,6 +72,9 @@ class TokoController extends Controller
         return view('admin.tokos.edit', compact('toko', 'users'));
     }
 
+    // ===============================
+    // UPDATE
+    // ===============================
     public function update(Request $request, $id)
     {
         $toko = Toko::findOrFail($id);
@@ -71,21 +88,29 @@ class TokoController extends Controller
             'alamat' => 'required|string',
         ]);
 
-        $data = $request->except('gambar');
+        // Cegah user lain punya toko lebih dari satu
+        $existingToko = Toko::where('id_user', $request->id_user)
+                            ->where('id_toko', '!=', $id)
+                            ->first();
+        if ($existingToko) {
+            return back()->withInput()->with('error', 'User ini sudah memiliki toko lain.');
+        }
 
-        // Handle upload gambar baru
-        // if ($request->hasFile('gambar')) {
-        //     // Hapus gambar lama jika ada
-        //     if ($toko->gambar && Storage::exists('public/tokos/' . $toko->gambar)) {
-        //         Storage::delete('public/tokos/' . $toko->gambar);
-        //     }
+        $data = $request->only(['nama_toko', 'deskripsi', 'id_user', 'kontak_toko', 'alamat']);
 
-        //     // Upload gambar baru
-        //     $file = $request->file('gambar');
-        //     $filename = time() . '.' . $file->getClientOriginalExtension();
-        //     $file->storeAs('public/tokos', $filename);
-        //     $data['gambar'] = $filename;
-        // }
+        // Jika upload gambar baru
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama
+            if ($toko->gambar && Storage::disk('public')->exists('tokos/' . $toko->gambar)) {
+                Storage::disk('public')->delete('tokos/' . $toko->gambar);
+            }
+
+            // Upload gambar baru
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('tokos', $filename, 'public');
+            $data['gambar'] = $filename;
+        }
 
         $toko->update($data);
 
@@ -93,27 +118,21 @@ class TokoController extends Controller
             ->with('success', 'Toko berhasil diperbarui.');
     }
 
+    // ===============================
+    // DESTROY
+    // ===============================
     public function destroy($id)
     {
         $toko = Toko::findOrFail($id);
 
-        // Hapus gambar toko jika ada
-        // if ($toko->gambar && Storage::exists('public/tokos/' . $toko->gambar)) {
-        //     Storage::delete('public/tokos/' . $toko->gambar);
-        // }
-
-        // // Hapus semua produk dan gambar produk terkait
-        // foreach ($toko->produks as $produk) {
-        //     foreach ($produk->gambarProduks as $gambarProduk) {
-        //         Storage::disk('public')->delete($gambarProduk->nama_gambar);
-        //         $gambarProduk->delete();
-        //     }
-        //     $produk->delete();
-        // }
+        // Hapus gambar toko kalau ada
+        if ($toko->gambar && Storage::disk('public')->exists('tokos/' . $toko->gambar)) {
+            Storage::disk('public')->delete('tokos/' . $toko->gambar);
+        }
 
         $toko->delete();
 
         return redirect()->route('admin.tokos.index')
-            ->with('success', 'Toko dan semua produk terkait berhasil dihapus.');
+            ->with('success', 'Toko berhasil dihapus.');
     }
 }

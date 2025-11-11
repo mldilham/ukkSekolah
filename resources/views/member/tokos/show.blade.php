@@ -60,7 +60,7 @@
                                 <div class="col-md-6 col-lg-4 mb-4">
                                     <div class="card h-100">
                                         @if($produk->gambarProduks->count() > 0)
-                                            <img src="{{ asset('storage/' . $produk->gambarProduks->first()->nama_gambar) }}"
+                                            <img src="{{ Storage::url('produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
                                                  alt="{{ $produk->nama_produk }}" class="card-img-top" style="height: 200px; object-fit: cover;">
                                         @else
                                             <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
@@ -72,8 +72,6 @@
                                             <h6 class="card-title">{{ $produk->nama_produk }}</h6>
                                             <p class="card-text text-muted small">{{ Str::limit($produk->deskripsi, 50) }}</p>
                                             <p class="card-text"><strong>Rp {{ number_format($produk->harga, 0, ',', '.') }}</strong></p>
-                                            <p class="card-text small text-muted">Stok: {{ $produk->stok }}</p>
-                                            <p class="card-text small text-muted">Kategori: {{ $produk->kategori->nama_kategori }}</p>
 
                                             <div class="mt-auto">
                                                 @if($produk->stok > 0)

@@ -14,9 +14,26 @@ class ProdukController extends Controller
     // ===============================
     // PRODUK MANAGEMENT
     // ===============================
-    public function index()
+    public function index(Request $request)
     {
-        $produks = Produk::with(['kategori', 'toko.user', 'gambarProduks'])->paginate(10);
+        $query = Produk::with(['kategori', 'toko.user', 'gambarProduks']);
+
+        // Filter berdasarkan pencarian nama produk
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('nama_produk', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter berdasarkan kategori
+        if ($request->has('kategori') && !empty($request->kategori)) {
+            $query->where('id_kategori', $request->kategori);
+        }
+
+        // Filter berdasarkan toko
+        if ($request->has('toko') && !empty($request->toko)) {
+            $query->where('id_toko', $request->toko);
+        }
+
+        $produks = $query->paginate(10)->appends($request->query());
         $kategoris = Kategori::all();
         $tokos = Toko::with('user')->get();
         return view('admin.produks.index', compact('produks', 'kategoris', 'tokos'));
@@ -46,11 +63,11 @@ class ProdukController extends Controller
 
         $produk = Produk::create($data);
 
-        // Handle upload gambar produk
+        // Handle upload gambar jika ada
         if ($request->hasFile('gambar_produk')) {
             $file = $request->file('gambar_produk');
             $filename = time() . '_' . $produk->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('produks'), $filename);
+            $file->storeAs('produks', $filename, 'public');
 
             GambarProduk::create([
                 'id_produk' => $produk->id_produk,
@@ -86,20 +103,18 @@ class ProdukController extends Controller
 
         $produk->update($request->all());
 
-        // Handle upload gambar produk baru
+        // Handle upload gambar baru jika ada
         if ($request->hasFile('gambar_produk')) {
             // Hapus gambar lama jika ada
-            if ($produk->gambarProduks->count() > 0) {
-                foreach ($produk->gambarProduks as $gambarProduk) {
-                    unlink(public_path('produks/' . $gambarProduk->nama_gambar));
-                    $gambarProduk->delete();
-                }
+            foreach ($produk->gambarProduks as $gambarProduk) {
+                Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
+                $gambarProduk->delete();
             }
 
             // Upload gambar baru
             $file = $request->file('gambar_produk');
             $filename = time() . '_' . $produk->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('produks'), $filename);
+            $file->storeAs('produks', $filename, 'public');
 
             GambarProduk::create([
                 'id_produk' => $produk->id_produk,
@@ -117,7 +132,7 @@ class ProdukController extends Controller
 
         // Hapus semua gambar produk terkait
         foreach ($produk->gambarProduks as $gambarProduk) {
-            unlink(public_path('produks/' . $gambarProduk->nama_gambar));
+            Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
             $gambarProduk->delete();
         }
 

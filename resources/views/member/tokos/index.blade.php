@@ -47,13 +47,13 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
-                                @if($toko->gambar)
+                                @if(!empty($toko->gambar) && file_exists(public_path('storage/tokos/' . $toko->gambar)))
                                     <img src="{{ asset('storage/tokos/' . $toko->gambar) }}"
-                                         alt="Logo Toko" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                                        alt="Gambar {{ $toko->nama_toko }}"
+                                        class="img-thumbnail"
+                                        style=" max-height: 200px;">
                                 @else
-                                    <div class="bg-light rounded d-flex align-items-center justify-content-center mb-3" style="height: 200px;">
-                                        <i class="fas fa-store fa-3x text-muted"></i>
-                                    </div>
+                                    <span class="text-muted">Tidak ada gambar</span>
                                 @endif
                             </div>
                             <div class="col-md-8">

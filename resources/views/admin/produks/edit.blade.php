@@ -81,6 +81,21 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="gambar_produk">Gambar Produk (Opsional)</label>
+                            @if($produk->gambarProduks->isNotEmpty())
+                                <div class="mb-2">
+                                    <img src="{{ Storage::url('produks/' . $produk->gambarProduks->first()->nama_gambar) }}" alt="{{ $produk->nama_produk }}" width="100" height="100" class="img-thumbnail">
+                                    <small class="form-text text-muted">Gambar saat ini</small>
+                                </div>
+                            @endif
+                            <input type="file" class="form-control @error('gambar_produk') is-invalid @enderror" id="gambar_produk" name="gambar_produk" accept="image/*">
+                            <small class="form-text text-muted">Pilih gambar baru untuk mengganti gambar yang ada (format: JPG, PNG, GIF, maksimal 2MB)</small>
+                            @error('gambar_produk')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Update</button>
                         <a href="{{ route('admin.produks.index') }}" class="btn btn-secondary">Batal</a>
                     </form>

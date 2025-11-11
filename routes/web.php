@@ -8,6 +8,7 @@ use App\Http\Controllers\TokoController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\GambarProdukController;
+use App\Http\Controllers\MemberController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,12 +71,14 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     // ===============================
     // 📦 PRODUK MANAGEMENT
     // ===============================
-    Route::get('/produks', [ProdukController::class, 'index'])->name('produks.index');
-    Route::get('/produks/create', [ProdukController::class, 'create'])->name('produks.create');
-    Route::post('/produks', [ProdukController::class, 'store'])->name('produks.store');
-    Route::get('/produks/{id}/edit', [ProdukController::class, 'edit'])->name('produks.edit');
-    Route::put('/produks/{id}', [ProdukController::class, 'update'])->name('produks.update');
-    Route::delete('/produks/{id}', [ProdukController::class, 'destroy'])->name('produks.destroy');
+    Route::resource('produks', App\Http\Controllers\ProdukController::class)->names([
+        'index' => 'produks.index',
+        'create' => 'produks.create',
+        'store' => 'produks.store',
+        'edit' => 'produks.edit',
+        'update' => 'produks.update',
+        'destroy' => 'produks.destroy',
+    ]);
 
     // ===============================
     // 🖼️ GAMBAR PRODUK MANAGEMENT
@@ -100,12 +103,22 @@ Route::prefix('member')->name('member.')->middleware('role:member')->group(funct
     // ===============================
     // 🏪 TOKO MANAGEMENT FOR MEMBERS
     // ===============================
-    Route::get('/tokos', [App\Http\Controllers\MemberController::class, 'indexToko'])->name('tokos.index');
-    Route::get('/tokos/create', [App\Http\Controllers\MemberController::class, 'createToko'])->name('tokos.create');
-    Route::post('/tokos', [App\Http\Controllers\MemberController::class, 'storeToko'])->name('tokos.store');
-    Route::get('/tokos/edit', [App\Http\Controllers\MemberController::class, 'editToko'])->name('tokos.edit');
-    Route::put('/tokos', [App\Http\Controllers\MemberController::class, 'updateToko'])->name('tokos.update');
-    Route::delete('/tokos', [App\Http\Controllers\MemberController::class, 'destroyToko'])->name('tokos.destroy');
+    Route::get('/tokos', [MemberController::class, 'indexToko'])->name('tokos.index');
+    Route::get('/tokos/create', [MemberController::class, 'createToko'])->name('tokos.create');
+    Route::post('/tokos', [MemberController::class, 'storeToko'])->name('tokos.store');
+    Route::get('/tokos/edit', [MemberController::class, 'editToko'])->name('tokos.edit');
+    Route::put('/tokos', [MemberController::class, 'updateToko'])->name('tokos.update');
+    Route::delete('/tokos', [MemberController::class, 'destroyToko'])->name('tokos.destroy');
+
+    // ===============================
+    // 📦 PRODUK MANAGEMENT FOR MEMBERS
+    // ===============================
+    Route::get('/produks', [MemberController::class, 'indexProduk'])->name('produks.index');
+    Route::get('/produks/create', [MemberController::class, 'createProduk'])->name('produks.create');
+    Route::post('/produks', [MemberController::class, 'storeProduk'])->name('produks.store');
+    Route::get('/produks/{id}/edit', [MemberController::class, 'editProduk'])->name('produks.edit');
+    Route::put('/produks/{id}', [MemberController::class, 'updateProduk'])->name('produks.update');
+    Route::delete('/produks/{id}', [MemberController::class, 'destroyProduk'])->name('produks.destroy');
 
     // Profil publik toko (akses tanpa middleware member)
 });

@@ -43,20 +43,19 @@
                         @enderror
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <label for="gambar">Logo / Banner Toko</label>
                         <input type="file" class="form-control-file @error('gambar') is-invalid @enderror" id="gambar" name="gambar" accept="image/*">
-                        @error('gambar')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                        <small class="form-text text-muted">Upload gambar baru untuk mengganti yang lama (JPG, PNG, GIF, max 2MB).</small>
+                            @error('gambar')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
 
-                        @if($toko->gambar)
-                            <div class="mt-2">
-                                <p><strong>Gambar saat ini:</strong></p>
-                                <img src="{{ asset('storage/tokos/' . $toko->gambar) }}" alt="Gambar Toko" class="img-thumbnail" width="200">
-                            </div>
-                        @endif
+                            @if($toko->gambar)
+                                <div class="mt-2">
+                                    <p>Gambar saat ini:</p>
+                                    <img src="{{ asset('storage/tokos/' . $toko->gambar) }}" alt="Gambar Toko" class="img-thumbnail" width="150">
+                                </div>
+                            @endif
                     </div>
 
                     <div class="form-group mb-3">

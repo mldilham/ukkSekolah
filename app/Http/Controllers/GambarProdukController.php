@@ -34,7 +34,7 @@ class GambarProdukController extends Controller
         // Upload gambar
         $file = $request->file('nama_gambar');
         $filename = time() . '_' . $request->id_produk . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('produks'), $filename);
+        $file->storeAs('produks', $filename, 'public');
 
         GambarProduk::create([
             'id_produk' => $request->id_produk,
@@ -66,12 +66,12 @@ class GambarProdukController extends Controller
         // Handle upload gambar baru
         if ($request->hasFile('nama_gambar')) {
             // Hapus gambar lama
-            unlink(public_path('produks/' . $gambarProduk->nama_gambar));
+            Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
 
             // Upload gambar baru
             $file = $request->file('nama_gambar');
             $filename = time() . '_' . $request->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('produks'), $filename);
+            $file->storeAs('produks', $filename, 'public');
             $data['nama_gambar'] = $filename;
         }
 
@@ -86,7 +86,7 @@ class GambarProdukController extends Controller
         $gambarProduk = GambarProduk::findOrFail($id);
 
         // Hapus file gambar
-        unlink(public_path('produks/' . $gambarProduk->nama_gambar));
+        Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
 
         $gambarProduk->delete();
 

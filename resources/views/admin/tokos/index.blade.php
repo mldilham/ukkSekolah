@@ -32,9 +32,11 @@
                         <tr>
                             <td>{{ $toko->id_toko }}</td>
                             <td>
-                                @if($toko->gambar)
+                                @if(!empty($toko->gambar) && file_exists(public_path('storage/tokos/' . $toko->gambar)))
                                     <img src="{{ asset('storage/tokos/' . $toko->gambar) }}"
-                                         alt="Gambar toko" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                        alt="Gambar {{ $toko->nama_toko }}"
+                                        class="img-thumbnail"
+                                        style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
                                 @else
                                     <span class="text-muted">Tidak ada gambar</span>
                                 @endif

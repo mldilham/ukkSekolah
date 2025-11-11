@@ -46,14 +46,21 @@
                         <select class="form-control @error('id_user') is-invalid @enderror" id="id_user" name="id_user" required>
                             <option value="">Pilih Pemilik</option>
                             @foreach($users as $user)
-                                <option value="{{ $user->id_user }}" {{ old('id_user') == $user->id_user ? 'selected' : '' }}>
+                                @php
+                                    $hasToko = $user->tokos()->exists();
+                                @endphp
+                                <option value="{{ $user->id_user }}" {{ old('id_user') == $user->id_user ? 'selected' : '' }} {{ $hasToko ? 'disabled' : '' }}>
                                     {{ $user->nama }} ({{ $user->username }})
+                                    @if($hasToko)
+                                        - Sudah memiliki toko
+                                    @endif
                                 </option>
                             @endforeach
                         </select>
                         @error('id_user')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="form-text text-muted">User yang sudah memiliki toko akan dinonaktifkan dalam pilihan ini.</small>
                     </div>
 
                     <div class="form-group mb-3">

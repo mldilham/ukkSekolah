@@ -134,7 +134,7 @@
                         <a href="#" class="list-group-item list-group-item-action">
                             <i class="fas fa-store mr-2"></i> Kelola Toko
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="{{ route('member.produks.index') }}" class="list-group-item list-group-item-action">
                             <i class="fas fa-box mr-2"></i> Kelola Produk
                         </a>
                         <a href="#" class="list-group-item list-group-item-action">

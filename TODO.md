@@ -13,3 +13,7 @@ Change image storage from `storage/app/public/produks` to `public/produks` to ma
 -   [x] Update GambarProdukController.php update method
 -   [x] Update GambarProdukController.php destroy method
 -   [x] Ensure public/produks directory exists
+-   [x] Update index.blade.php to display product images
+-   [x] Update edit.blade.php to allow image updates
+-   [x] Update create.blade.php (already has input, now functional)
+-   [x] Change to use Laravel Storage facade instead of direct file operations
