@@ -55,28 +55,29 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'id_toko' => 'required|exists:tokos,id_toko',
-            'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'gambar_produk.*' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('gambar_produk');
         $data['tanggal_upload'] = now();
 
         $produk = Produk::create($data);
 
-        // Handle upload gambar jika ada
+        // Simpan semua gambar
         if ($request->hasFile('gambar_produk')) {
-            $file = $request->file('gambar_produk');
-            $filename = time() . '_' . $produk->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('produks', $filename, 'public');
+            foreach ($request->file('gambar_produk') as $file) {
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('produks', $filename, 'public');
 
-            GambarProduk::create([
-                'id_produk' => $produk->id_produk,
-                'nama_gambar' => $filename,
-            ]);
+                GambarProduk::create([
+                    'id_produk' => $produk->id_produk,
+                    'nama_gambar' => $filename,
+                ]);
+            }
         }
 
         return redirect()->route('admin.produks.index')
-            ->with('success', 'Produk berhasil dibuat.');
+            ->with('success', 'Produk berhasil dibuat dengan beberapa gambar.');
     }
 
     public function edit($id)
@@ -98,33 +99,28 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'id_toko' => 'required|exists:tokos,id_toko',
-            'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'gambar_produk.*' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $produk->update($request->all());
+        $produk->update($request->except('gambar_produk'));
 
-        // Handle upload gambar baru jika ada
+        // Upload gambar baru jika ada
         if ($request->hasFile('gambar_produk')) {
-            // Hapus gambar lama jika ada
-            foreach ($produk->gambarProduks as $gambarProduk) {
-                Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
-                $gambarProduk->delete();
+            foreach ($request->file('gambar_produk') as $file) {
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('produks', $filename, 'public');
+
+                GambarProduk::create([
+                    'id_produk' => $produk->id_produk,
+                    'nama_gambar' => $filename,
+                ]);
             }
-
-            // Upload gambar baru
-            $file = $request->file('gambar_produk');
-            $filename = time() . '_' . $produk->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('produks', $filename, 'public');
-
-            GambarProduk::create([
-                'id_produk' => $produk->id_produk,
-                'nama_gambar' => $filename,
-            ]);
         }
 
         return redirect()->route('admin.produks.index')
             ->with('success', 'Produk berhasil diperbarui.');
     }
+
 
     public function destroy($id)
     {
@@ -140,5 +136,11 @@ class ProdukController extends Controller
 
         return redirect()->route('admin.produks.index')
             ->with('success', 'Produk dan gambar terkait berhasil dihapus.');
+    }
+
+    public function show($id)
+    {
+        $produk = Produk::with(['kategori', 'toko', 'gambarProduks'])->findOrFail($id);
+        return view('admin.produks.show', compact('produk'));
     }
 }

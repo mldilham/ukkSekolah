@@ -47,6 +47,9 @@
                             <td>{{ $toko->kontak_toko }}</td>
                             <td>{{ Str::limit($toko->alamat, 50) }}</td>
                             <td>
+                                <a href="{{ route('tokos.show', $toko->id_toko) }}" target="_blank" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Lihat
+                                </a>
                                 <a href="{{ route('admin.tokos.edit', $toko->id_toko) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>

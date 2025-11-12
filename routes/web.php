@@ -71,14 +71,19 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     // ===============================
     // 📦 PRODUK MANAGEMENT
     // ===============================
-    Route::resource('produks', App\Http\Controllers\ProdukController::class)->names([
+    Route::resource('produks', ProdukController::class)->names([
         'index' => 'produks.index',
         'create' => 'produks.create',
         'store' => 'produks.store',
         'edit' => 'produks.edit',
         'update' => 'produks.update',
         'destroy' => 'produks.destroy',
+        'show' => 'produks.show',
     ]);
+
+    // 🖼️ Hapus gambar produk satuan
+    Route::delete('/produks/gambar/{id}', [ProdukController::class, 'hapusGambar'])
+        ->name('produks.gambar.destroy');
 
     // ===============================
     // 🖼️ GAMBAR PRODUK MANAGEMENT
@@ -119,11 +124,9 @@ Route::prefix('member')->name('member.')->middleware('role:member')->group(funct
     Route::get('/produks/{id}/edit', [MemberController::class, 'editProduk'])->name('produks.edit');
     Route::put('/produks/{id}', [MemberController::class, 'updateProduk'])->name('produks.update');
     Route::delete('/produks/{id}', [MemberController::class, 'destroyProduk'])->name('produks.destroy');
-
-    // Profil publik toko (akses tanpa middleware member)
 });
 
 // ===============================
 // 🏪 TOKO PUBLIC PROFILE (untuk semua user)
 // ===============================
-Route::get('/tokos/{id_toko}', [App\Http\Controllers\MemberController::class, 'showToko'])->name('tokos.show');
+Route::get('/tokos/{id_toko}', [MemberController::class, 'showToko'])->name('tokos.show');

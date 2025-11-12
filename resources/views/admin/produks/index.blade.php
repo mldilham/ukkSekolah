@@ -60,8 +60,8 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                <table class="table table-bordered align-middle" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="table-primary">
                         <tr>
                             <th>ID</th>
                             <th>Gambar</th>
@@ -80,9 +80,17 @@
                             <td>{{ $produk->id_produk }}</td>
                             <td>
                                 @if($produk->gambarProduks->isNotEmpty())
-                                    <img src="{{ Storage::url('produks/' . $produk->gambarProduks->first()->nama_gambar) }}" alt="{{ $produk->nama_produk }}" width="50" height="50" class="img-thumbnail">
+                                    <div class="text-center">
+                                        <img src="{{ Storage::url('produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
+                                             alt="{{ $produk->nama_produk }}"
+                                             width="50" height="50"
+                                             class="img-thumbnail mb-1">
+                                        <div class="small text-muted">
+                                            +{{ $produk->gambarProduks->count() - 1 }} lainnya
+                                        </div>
+                                    </div>
                                 @else
-                                    <span class="text-muted">No Image</span>
+                                    <span class="text-muted">Tidak ada gambar</span>
                                 @endif
                             </td>
                             <td>{{ $produk->nama_produk }}</td>
@@ -92,6 +100,9 @@
                             <td>{{ $produk->stok }}</td>
                             <td>{{ $produk->tanggal_upload->format('d/m/Y') }}</td>
                             <td>
+                                <a href="{{ route('admin.produks.show', $produk->id_produk) }}" target="_blank" class="btn btn-sm btn-info mb-1">
+                                    <i class="fas fa-edit"></i> Lihat
+                                </a>
                                 <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning mb-1">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>

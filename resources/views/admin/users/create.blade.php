@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -20,7 +21,8 @@
 
                         <div class="form-group">
                             <label for="nama">Nama</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama') }}" required>
+                            <input type="text" class="form-control @error('nama') is-invalid @enderror"
+                                   id="nama" name="nama" value="{{ old('nama') }}" required>
                             @error('nama')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -28,7 +30,8 @@
 
                         <div class="form-group">
                             <label for="kontak">Kontak</label>
-                            <input type="text" class="form-control @error('kontak') is-invalid @enderror" id="kontak" name="kontak" value="{{ old('kontak') }}" required>
+                            <input type="text" class="form-control @error('kontak') is-invalid @enderror"
+                                   id="kontak" name="kontak" value="{{ old('kontak') }}">
                             @error('kontak')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -36,7 +39,8 @@
 
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username') }}" required>
+                            <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                   id="username" name="username" value="{{ old('username') }}" required>
                             @error('username')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -44,15 +48,23 @@
 
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
+                            <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                   id="password" name="password" required>
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-group">
+                            <label for="password_confirmation">Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="password_confirmation"
+                                   name="password_confirmation" required>
+                        </div>
+
+                        <div class="form-group">
                             <label for="role">Role</label>
-                            <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
+                            <select class="form-control @error('role') is-invalid @enderror"
+                                    id="role" name="role" required>
                                 <option value="">Pilih Role</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="member" {{ old('role') == 'member' ? 'selected' : '' }}>Member</option>

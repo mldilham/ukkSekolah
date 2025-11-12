@@ -26,67 +26,68 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
             'nama' => 'required|string|max:255',
             'kontak' => 'nullable|string|max:13',
-            'username' => 'required|string|max:255|unique:users',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,member',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
             'nama' => $request->nama,
             'kontak' => $request->kontak,
             'username' => $request->username,
+            'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.users')
             ->with('success', 'User berhasil dibuat.');
     }
 
     public function edit($id)
     {
-        $user = User::findOrFail($id);
+        // Gunakan id_user jika di tabel primary key-nya bukan id
+        $user = User::where('id_user', $id)->firstOrFail();
+
         return view('admin.users.edit', compact('user'));
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id_user', $id)->firstOrFail();
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
-            'password' => 'nullable|string|min:8|confirmed',
             'nama' => 'required|string|max:255',
             'kontak' => 'nullable|string|max:13',
-            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users', 'username')->ignore($user->id_user, 'id_user')
+            ],
+            'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|in:admin,member',
         ]);
 
-        $data = $request->except('password');
+        $data = $request->only(['nama', 'kontak', 'username', 'role']);
+
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.users')
             ->with('success', 'User berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-
+        $user = User::where('id_user', $id)->firstOrFail();
         $user->delete();
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User dan semua data terkait berhasil dihapus.');
+        return redirect()->route('admin.users')
+            ->with('success', 'User berhasil dihapus.');
     }
 }

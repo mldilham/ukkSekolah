@@ -21,7 +21,8 @@
 
                         <div class="form-group">
                             <label for="nama">Nama</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama', $user->nama) }}" required>
+                            <input type="text" class="form-control @error('nama') is-invalid @enderror"
+                                   id="nama" name="nama" value="{{ old('nama', $user->nama) }}" required>
                             @error('nama')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -29,7 +30,8 @@
 
                         <div class="form-group">
                             <label for="kontak">Kontak</label>
-                            <input type="text" class="form-control @error('kontak') is-invalid @enderror" id="kontak" name="kontak" value="{{ old('kontak', $user->kontak) }}" required>
+                            <input type="text" class="form-control @error('kontak') is-invalid @enderror"
+                                   id="kontak" name="kontak" value="{{ old('kontak', $user->kontak) }}">
                             @error('kontak')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -37,23 +39,41 @@
 
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username', $user->username) }}" required>
+                            <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                   id="username" name="username" value="{{ old('username', $user->username) }}" required>
                             @error('username')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="password">Password (Kosongkan jika tidak ingin mengubah)</label>
-                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                   id="email" name="email" value="{{ old('email', $user->email) }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password (kosongkan jika tidak ingin mengubah)</label>
+                            <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                   id="password" name="password">
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-group">
+                            <label for="password_confirmation">Konfirmasi Password (kosongkan jika tidak mengubah)</label>
+                            <input type="password" class="form-control"
+                                   id="password_confirmation" name="password_confirmation">
+                        </div>
+
+                        <div class="form-group">
                             <label for="role">Role</label>
-                            <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
+                            <select class="form-control @error('role') is-invalid @enderror"
+                                    id="role" name="role" required>
                                 <option value="">Pilih Role</option>
                                 <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="member" {{ old('role', $user->role) == 'member' ? 'selected' : '' }}>Member</option>
