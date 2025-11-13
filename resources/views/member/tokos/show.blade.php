@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('member.layouts.app')
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -75,9 +75,9 @@
 
                                             <div class="mt-auto">
                                                 @if($produk->stok > 0)
-                                                    <button class="btn btn-success btn-sm btn-block" disabled>
-                                                        <i class="fas fa-shopping-cart"></i> Beli Sekarang
-                                                    </button>
+                                                    <a href="{{ route('tokos.show', $toko->id_toko) }}?produk={{ $produk->id_produk }}" class="btn btn-success btn-sm btn-block">
+                                                        <i class="fas fa-eye"></i> Detail Produk
+                                                    </a>
                                                 @else
                                                     <button class="btn btn-secondary btn-sm btn-block" disabled>
                                                         <i class="fas fa-times"></i> Stok Habis

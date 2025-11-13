@@ -55,7 +55,8 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'id_toko' => 'required|exists:tokos,id_toko',
-            'gambar_produk.*' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'gambar_produk' => 'nullable|array|max:10',
+            'gambar_produk.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
         $data = $request->except('gambar_produk');
@@ -66,13 +67,13 @@ class ProdukController extends Controller
         // Simpan semua gambar
         if ($request->hasFile('gambar_produk')) {
             foreach ($request->file('gambar_produk') as $file) {
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('produks', $filename, 'public');
-
-                GambarProduk::create([
-                    'id_produk' => $produk->id_produk,
-                    'nama_gambar' => $filename,
-                ]);
+                $filename = uniqid() . '.' . $file->extension();
+                if ($file->storeAs('produks', $filename, 'public')) {
+                    GambarProduk::create([
+                        'id_produk' => $produk->id_produk,
+                        'nama_gambar' => $filename,
+                    ]);
+                }
             }
         }
 
@@ -99,21 +100,35 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'id_toko' => 'required|exists:tokos,id_toko',
-            'gambar_produk.*' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'delete_gambar' => 'nullable|array',
+            'delete_gambar.*' => 'integer|exists:gambar_produks,id_gambar',
+            'gambar_produk' => 'nullable|array|max:10',
+            'gambar_produk.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $produk->update($request->except('gambar_produk'));
+        $produk->update($request->except(['gambar_produk', 'delete_gambar']));
+
+        // Hapus gambar yang dipilih
+        if ($request->has('delete_gambar') && is_array($request->delete_gambar)) {
+            foreach ($request->delete_gambar as $id_gambar) {
+                $gambar = GambarProduk::find($id_gambar);
+                if ($gambar && $gambar->id_produk == $produk->id_produk) {
+                    Storage::disk('public')->delete('produks/' . $gambar->nama_gambar);
+                    $gambar->delete();
+                }
+            }
+        }
 
         // Upload gambar baru jika ada
         if ($request->hasFile('gambar_produk')) {
             foreach ($request->file('gambar_produk') as $file) {
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('produks', $filename, 'public');
-
-                GambarProduk::create([
-                    'id_produk' => $produk->id_produk,
-                    'nama_gambar' => $filename,
-                ]);
+                $filename = uniqid() . '.' . $file->extension();
+                if ($file->storeAs('produks', $filename, 'public')) {
+                    GambarProduk::create([
+                        'id_produk' => $produk->id_produk,
+                        'nama_gambar' => $filename,
+                    ]);
+                }
             }
         }
 
@@ -143,4 +158,5 @@ class ProdukController extends Controller
         $produk = Produk::with(['kategori', 'toko', 'gambarProduks'])->findOrFail($id);
         return view('admin.produks.show', compact('produk'));
     }
+
 }

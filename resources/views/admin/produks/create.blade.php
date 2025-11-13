@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -112,19 +112,20 @@
                             @enderror
                         </div>
 
-                        <!-- Upload Gambar Multiple -->
+                        <!-- Upload Gambar -->
                         <div class="form-group">
-                            <label for="gambar_produk">Gambar Produk (Bisa lebih dari satu)</label>
+                            <label for="gambar_produk">Gambar Produk</label>
                             <input type="file"
-                                   class="form-control @error('gambar_produk.*') is-invalid @enderror"
+                                   class="form-control @error('gambar_produk') is-invalid @enderror"
                                    id="gambar_produk"
                                    name="gambar_produk[]"
                                    accept="image/*"
-                                   multiple>
+                                   multiple
+                                   required>
                             <small class="form-text text-muted">
-                                Pilih beberapa gambar (format JPG, PNG, GIF, max 2MB per file)
+                                Pilih satu atau lebih gambar (format JPG, PNG, GIF, max 2MB per file, maksimal 10 gambar)
                             </small>
-                            @error('gambar_produk.*')
+                            @error('gambar_produk')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

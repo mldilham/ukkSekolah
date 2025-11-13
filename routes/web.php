@@ -9,10 +9,10 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\GambarProdukController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ===============================
 // 🔐 AUTHENTICATION ROUTES
@@ -22,11 +22,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Dashboard umum
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-});
 
 // ===============================
 // 📦 ROUTES UNTUK ADMIN
@@ -81,10 +76,6 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
         'show' => 'produks.show',
     ]);
 
-    // 🖼️ Hapus gambar produk satuan
-    Route::delete('/produks/gambar/{id}', [ProdukController::class, 'hapusGambar'])
-        ->name('produks.gambar.destroy');
-
     // ===============================
     // 🖼️ GAMBAR PRODUK MANAGEMENT
     // ===============================
@@ -129,4 +120,7 @@ Route::prefix('member')->name('member.')->middleware('role:member')->group(funct
 // ===============================
 // 🏪 TOKO PUBLIC PROFILE (untuk semua user)
 // ===============================
-Route::get('/tokos/{id_toko}', [MemberController::class, 'showToko'])->name('tokos.show');
+Route::get('/tokos', [PublicController::class, 'indexToko'])->name('public.tokos.index');
+Route::get('/tokos/{id_toko}', [PublicController::class, 'showToko'])->name('tokos.show');
+Route::get('/produks', [PublicController::class, 'indexProduk'])->name('public.produks.index');
+Route::get('/produks/{id}', [PublicController::class, 'showProduk'])->name('produks.show');

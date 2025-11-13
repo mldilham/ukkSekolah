@@ -90,6 +90,13 @@ class GambarProdukController extends Controller
 
         $gambarProduk->delete();
 
+        // Redirect ke URL yang diminta atau kembali
+        $redirectTo = request('redirect_to');
+        if ($redirectTo) {
+            return redirect($redirectTo)
+                ->with('success', 'Gambar produk berhasil dihapus.');
+        }
+
         return redirect()->route('admin.gambar_produks.index')
             ->with('success', 'Gambar produk berhasil dihapus.');
     }

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('member.layouts.app')
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -91,24 +91,36 @@
                         <!-- Gambar Produk Saat Ini -->
                         <div class="form-group">
                             <label>Gambar Produk Saat Ini</label>
-                            <div class="border rounded p-3 text-center">
+                            <div class="border rounded p-3">
                                 @if($produk->gambarProduks->count() > 0)
-                                    <img src="{{ asset('produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                                         alt="Gambar Produk" class="img-fluid rounded mb-2" style="max-height: 150px;">
-                                    <small class="text-muted">Gambar sudah ada. Upload gambar baru untuk mengganti.</small>
+                                    <div class="row">
+                                        @foreach($produk->gambarProduks as $gambar)
+                                            <div class="col-md-3 mb-2">
+                                                <img src="{{ asset('storage/produks/' . $gambar->nama_gambar) }}" alt="Gambar Produk" class="img-thumbnail" style="width: 100%; height: 100px; object-fit: cover;">
+                                                <div class="form-check mt-1">
+                                                    <input class="form-check-input" type="checkbox" name="delete_gambar[]" value="{{ $gambar->id_gambar }}" id="delete_{{ $gambar->id_gambar }}">
+                                                    <label class="form-check-label" for="delete_{{ $gambar->id_gambar }}">
+                                                        Hapus gambar ini
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 @else
-                                    <i class="fas fa-image fa-3x text-muted mb-2"></i>
-                                    <p class="text-muted">Belum ada gambar</p>
+                                    <div class="text-center">
+                                        <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                                        <p class="text-muted">Belum ada gambar</p>
+                                    </div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Upload Gambar Baru -->
                         <div class="form-group">
-                            <label for="gambar_produk">Upload Gambar Baru</label>
-                            <input type="file" class="form-control-file @error('gambar_produk') is-invalid @enderror"
-                                   id="gambar_produk" name="gambar_produk" accept="image/*">
-                            <small class="form-text text-muted">Format: JPG, JPEG, PNG, GIF. Maksimal 2MB. Kosongkan jika tidak ingin mengubah gambar.</small>
+                            <label for="gambar_produk">Tambah Gambar Baru</label>
+                            <input type="file" class="form-control @error('gambar_produk') is-invalid @enderror"
+                                   id="gambar_produk" name="gambar_produk[]" accept="image/*" multiple>
+                            <small class="form-text text-muted">Format: JPG, JPEG, PNG, GIF. Maksimal 2MB per file. Maksimal 10 gambar. Kosongkan jika tidak ingin menambah gambar.</small>
                             @error('gambar_produk')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror

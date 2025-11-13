@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -45,7 +45,7 @@
                     <button type="submit" class="btn btn-primary me-2">
                         <i class="fas fa-search"></i> Cari
                     </button>
-                    <a href="{{ route('admin.produks.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('admin.produks.index') }}"  class="btn btn-secondary">
                         <i class="fas fa-times"></i> Reset
                     </a>
                 </div>
@@ -61,7 +61,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered align-middle" id="dataTable" width="100%" cellspacing="0">
-                    <thead class="table-primary">
+                    <thead class="table">
                         <tr>
                             <th>ID</th>
                             <th>Gambar</th>
@@ -80,14 +80,18 @@
                             <td>{{ $produk->id_produk }}</td>
                             <td>
                                 @if($produk->gambarProduks->isNotEmpty())
-                                    <div class="text-center">
-                                        <img src="{{ Storage::url('produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                                             alt="{{ $produk->nama_produk }}"
-                                             width="50" height="50"
-                                             class="img-thumbnail mb-1">
-                                        <div class="small text-muted">
-                                            +{{ $produk->gambarProduks->count() - 1 }} lainnya
-                                        </div>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach($produk->gambarProduks->take(3) as $gambar)
+                                            <img src="{{ Storage::url('produks/' . $gambar->nama_gambar) }}"
+                                                 alt="{{ $produk->nama_produk }}"
+                                                 width="40" height="40"
+                                                 class="img-thumbnail">
+                                        @endforeach
+                                        @if($produk->gambarProduks->count() > 3)
+                                            <div class="d-flex align-items-center justify-content-center bg-light border rounded" style="width: 40px; height: 40px;">
+                                                <small class="text-muted">+{{ $produk->gambarProduks->count() - 3 }}</small>
+                                            </div>
+                                        @endif
                                     </div>
                                 @else
                                     <span class="text-muted">Tidak ada gambar</span>
@@ -101,7 +105,7 @@
                             <td>{{ $produk->tanggal_upload->format('d/m/Y') }}</td>
                             <td>
                                 <a href="{{ route('admin.produks.show', $produk->id_produk) }}" target="_blank" class="btn btn-sm btn-info mb-1">
-                                    <i class="fas fa-edit"></i> Lihat
+                                    <i class="fas fa-eye"></i> Lihat
                                 </a>
                                 <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning mb-1">
                                     <i class="fas fa-edit"></i> Edit

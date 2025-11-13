@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('member.layouts.app')
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -90,9 +90,9 @@
                         <!-- Gambar Produk -->
                         <div class="form-group">
                             <label for="gambar_produk">Gambar Produk</label>
-                            <input type="file" class="form-control-file @error('gambar_produk') is-invalid @enderror"
-                                   id="gambar_produk" name="gambar_produk" accept="image/*">
-                            <small class="form-text text-muted">Format: JPG, JPEG, PNG, GIF. Maksimal 2MB.</small>
+                            <input type="file" class="form-control @error('gambar_produk') is-invalid @enderror"
+                                   id="gambar_produk" name="gambar_produk[]" accept="image/*" multiple>
+                            <small class="form-text text-muted">Format: JPG, JPEG, PNG, GIF. Maksimal 2MB per file. Maksimal 10 gambar.</small>
                             @error('gambar_produk')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror

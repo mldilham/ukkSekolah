@@ -1,19 +1,8 @@
-# TODO: Fix Image Storage Path for Products
+# TODO: Update Produk dengan Gambar Multiple (Tanpa JavaScript)
 
-## Overview
+## Langkah-langkah:
 
-Change image storage from `storage/app/public/produks` to `public/produks` to make images directly accessible without storage link.
-
-## Steps
-
--   [x] Update ProdukController.php store method
--   [x] Update ProdukController.php update method
--   [x] Update ProdukController.php destroy method
--   [x] Update GambarProdukController.php store method
--   [x] Update GambarProdukController.php update method
--   [x] Update GambarProdukController.php destroy method
--   [x] Ensure public/produks directory exists
--   [x] Update index.blade.php to display product images
--   [x] Update edit.blade.php to allow image updates
--   [x] Update create.blade.php (already has input, now functional)
--   [x] Change to use Laravel Storage facade instead of direct file operations
+-   [x] Modifikasi `resources/views/admin/produks/edit.blade.php`: Tambahkan checkbox untuk setiap gambar yang ada dengan name="delete_gambar[]", hapus onsubmit JavaScript, ganti dengan checkbox untuk memilih gambar yang akan dihapus.
+-   [x] Modifikasi `app/Http/Controllers/ProdukController.php` update(): Tambahkan validasi untuk delete_gambar (array of integers, exists in gambar_produks), logika untuk menghapus gambar yang dipilih (hapus file dari storage dan record dari DB), lalu tambah gambar baru jika ada.
+-   [ ] Test update produk: Pilih gambar untuk dihapus via checkbox, tambah gambar baru, pastikan data tersimpan, file terhapus/ditambah, tidak ada error validasi atau storage.
+-   [ ] Verifikasi tidak ada gambar yang dihapus jika tidak dipilih, dan fungsi lain tetap berjalan.

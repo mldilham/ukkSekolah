@@ -1,10 +1,10 @@
-@extends('admin.layouts.app')
+@extends('member.layouts.app')
 @section('content')
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.produks.index') }}">Produk</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('member.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('member.produks.index') }}">Produk</a></li>
             <li class="breadcrumb-item active">{{ $produk->nama_produk }}</li>
         </ol>
     </nav>
@@ -108,13 +108,13 @@
 
                 <!-- Action Buttons -->
                 <div class="action-buttons">
-                    <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-warning btn-lg btn-block mb-2">
+                    <a href="{{ route('member.produks.edit', $produk->id_produk) }}" class="btn btn-warning btn-lg btn-block mb-2">
                         <i class="fas fa-edit"></i> Edit Produk
                     </a>
-                    <a href="{{ route('tokos.show', $produk->toko->id_toko) }}" class="btn btn-info btn-lg btn-block mb-2" target="_blank">
+                    {{-- <a href="{{ route('tokos.show', $produk->toko->id_toko) }}" class="btn btn-info btn-lg btn-block mb-2" target="_blank">
                         <i class="fas fa-store"></i> Lihat di Toko
-                    </a>
-                    <form action="{{ route('admin.produks.destroy', $produk->id_produk) }}" method="POST" class="d-inline w-100">
+                    </a> --}}
+                    <form action="{{ route('member.produks.destroy', $produk->id_produk) }}" method="POST" class="d-inline w-100">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-lg btn-block" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">

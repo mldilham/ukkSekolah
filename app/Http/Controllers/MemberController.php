@@ -70,33 +70,36 @@ class MemberController extends Controller
         }
 
         $request->validate([
-            'nama_produk' => 'required|string|max:100',
+            'nama_produk' => 'required|string|max:255',
             'id_kategori' => 'required|exists:kategoris,id_kategori',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
-            'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'gambar_produk' => 'nullable|array|max:10',
+            'gambar_produk.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('gambar_produk');
         $data['id_toko'] = $toko->id_toko;
+        $data['tanggal_upload'] = now();
 
         $produk = Produk::create($data);
 
-        // Handle upload gambar jika ada
+        // Simpan semua gambar
         if ($request->hasFile('gambar_produk')) {
-            $file = $request->file('gambar_produk');
-            $filename = time() . '_' . $produk->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('produks', $filename, 'public');
-
-            GambarProduk::create([
-                'id_produk' => $produk->id_produk,
-                'nama_gambar' => $filename,
-            ]);
+            foreach ($request->file('gambar_produk') as $file) {
+                $filename = uniqid() . '.' . $file->extension();
+                if ($file->storeAs('produks', $filename, 'public')) {
+                    GambarProduk::create([
+                        'id_produk' => $produk->id_produk,
+                        'nama_gambar' => $filename,
+                    ]);
+                }
+            }
         }
 
         return redirect()->route('member.produks.index')
-            ->with('success', 'Produk berhasil ditambahkan.');
+            ->with('success', 'Produk berhasil dibuat dengan beberapa gambar.');
     }
 
     /**
@@ -134,34 +137,41 @@ class MemberController extends Controller
         $produk = Produk::where('id_toko', $toko->id_toko)->findOrFail($id);
 
         $request->validate([
-            'nama_produk' => 'required|string|max:100',
+            'nama_produk' => 'required|string|max:255',
             'id_kategori' => 'required|exists:kategoris,id_kategori',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
-            'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'delete_gambar' => 'nullable|array',
+            'delete_gambar.*' => 'integer|exists:gambar_produks,id_gambar',
+            'gambar_produk' => 'nullable|array|max:10',
+            'gambar_produk.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $data = $request->except('gambar_produk');
-        $produk->update($data);
+        $produk->update($request->except(['gambar_produk', 'delete_gambar']));
 
-        // Handle upload gambar baru jika ada
-        if ($request->hasFile('gambar_produk')) {
-            // Hapus gambar lama jika ada
-            foreach ($produk->gambarProduks as $gambarProduk) {
-                Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);
-                $gambarProduk->delete();
+        // Hapus gambar yang dipilih
+        if ($request->has('delete_gambar') && is_array($request->delete_gambar)) {
+            foreach ($request->delete_gambar as $id_gambar) {
+                $gambar = GambarProduk::find($id_gambar);
+                if ($gambar && $gambar->id_produk == $produk->id_produk) {
+                    Storage::disk('public')->delete('produks/' . $gambar->nama_gambar);
+                    $gambar->delete();
+                }
             }
+        }
 
-            // Upload gambar baru
-            $file = $request->file('gambar_produk');
-            $filename = time() . '_' . $produk->id_produk . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('produks', $filename, 'public');
-
-            GambarProduk::create([
-                'id_produk' => $produk->id_produk,
-                'nama_gambar' => $filename,
-            ]);
+        // Upload gambar baru jika ada
+        if ($request->hasFile('gambar_produk')) {
+            foreach ($request->file('gambar_produk') as $file) {
+                $filename = uniqid() . '.' . $file->extension();
+                if ($file->storeAs('produks', $filename, 'public')) {
+                    GambarProduk::create([
+                        'id_produk' => $produk->id_produk,
+                        'nama_gambar' => $filename,
+                    ]);
+                }
+            }
         }
 
         return redirect()->route('member.produks.index')
@@ -194,6 +204,12 @@ class MemberController extends Controller
 
         return redirect()->route('member.produks.index')
             ->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function showProduks($id)
+    {
+        $produk = Produk::with(['kategori', 'toko', 'gambarProduks'])->findOrFail($id);
+        return view('member.produks.show', compact('produk'));
     }
 
     // ===============================
@@ -372,9 +388,19 @@ class MemberController extends Controller
     /**
      * Tampilkan profil publik toko
      */
-    public function showToko($id_toko)
+    public function showToko(Request $request, $id_toko)
     {
         $toko = Toko::with(['user', 'produks.kategori', 'produks.gambarProduks'])->findOrFail($id_toko);
+
+        // Jika ada parameter produk, redirect ke halaman detail produk admin
+        if ($request->has('produk')) {
+            $produk_id = $request->produk;
+            // Verifikasi bahwa produk tersebut milik toko ini
+            $produk = $toko->produks()->find($produk_id);
+            if ($produk) {
+                return redirect()->route('admin.produks.show', $produk_id);
+            }
+        }
 
         return view('member.tokos.show', compact('toko'));
     }

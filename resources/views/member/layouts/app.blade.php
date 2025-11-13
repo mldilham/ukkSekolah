@@ -21,15 +21,7 @@
     <link href="{{ asset('template/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
 </head>
-<style>
-.bg-gradient-primary {
-    background: linear-gradient(90deg, #007bff 0%, #28a745 100%);
-}
-.hover-shadow:hover {
-    transform: translateY(-5px);
-    transition: 0.3s;
-}
-</style>
+
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -37,6 +29,7 @@
 
 
         <!-- End of Sidebar -->
+        @include('member.layouts.sidebar')
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -46,7 +39,7 @@
                 <!-- Topbar -->
 
                 <!-- End of Topbar -->
-                @include('layouts.navbar')
+                @include('member.layouts.navbar')
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     @yield('content')
@@ -59,7 +52,13 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            @include('layouts.footer')
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
             <!-- End of Footer -->
 
         </div>

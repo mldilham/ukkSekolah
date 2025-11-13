@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('member.layouts.app')
 
 @section('content')
     <!-- Page Heading -->
@@ -131,7 +131,7 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="{{ route('member.tokos.index') }}" class="list-group-item list-group-item-action">
                             <i class="fas fa-store mr-2"></i> Kelola Toko
                         </a>
                         <a href="{{ route('member.produks.index') }}" class="list-group-item list-group-item-action">

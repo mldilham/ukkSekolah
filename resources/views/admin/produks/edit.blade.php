@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 @section('content')
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -15,7 +15,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Edit Produk</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.produks.update', $produk->id_produk) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.produks.update', $produk->id_produk) }}" method="POST" enctype="multipart/form-data" onsubmit="console.log('Form submitted');">
                         @csrf
                         @method('PUT')
 
@@ -102,28 +102,21 @@
                         <div class="form-group">
                             <label for="gambar_produk">Gambar Produk</label>
 
-                            {{-- Gambar yang sudah ada --}}
-                            @if($produk->gambarProduks->isNotEmpty())
+                            {{-- Tampilkan gambar yang sudah ada --}}
+                            @if($produk->gambarProduks->count() > 0)
                                 <div class="mb-3">
                                     <label>Gambar Saat Ini:</label>
-                                    <div class="d-flex flex-wrap gap-2">
+                                    <small class="form-text text-muted">Centang gambar yang ingin dihapus.</small>
+                                    <div class="row">
                                         @foreach($produk->gambarProduks as $gambar)
-                                            <div class="position-relative m-2" style="width: 100px;">
-                                                <img src="{{ Storage::url('produks/' . $gambar->nama_gambar) }}"
-                                                     alt="{{ $produk->nama_produk }}"
-                                                     width="100" height="100"
-                                                     class="img-thumbnail shadow-sm">
-
-                                                <!-- Tombol Hapus -->
-                                                <form action="{{ route('admin.produks.gambar.destroy', $gambar->id_gambar) }}" method="POST" class="position-absolute top-0 end-0">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1"
-                                                            onclick="return confirm('Yakin ingin menghapus gambar ini?')"
-                                                            title="Hapus Gambar">
-                                                        <i class="fas fa-times fa-xs"></i>
-                                                    </button>
-                                                </form>
+                                            <div class="col-md-3 mb-2">
+                                                <img src="{{ asset('storage/produks/' . $gambar->nama_gambar) }}" alt="Gambar Produk" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                                <div class="form-check mt-1">
+                                                    <input class="form-check-input" type="checkbox" name="delete_gambar[]" value="{{ $gambar->id_gambar }}" id="delete_{{ $gambar->id_gambar }}">
+                                                    <label class="form-check-label" for="delete_{{ $gambar->id_gambar }}">
+                                                        Hapus gambar ini
+                                                    </label>
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -131,23 +124,22 @@
                             @endif
 
                             {{-- Upload gambar baru --}}
-                            <input
-                                type="file"
-                                class="form-control @error('gambar_produk.*') is-invalid @enderror"
-                                id="gambar_produk"
-                                name="gambar_produk[]"
-                                accept="image/*"
-                                multiple
-                            >
+                            <label for="gambar_produk">Tambah Gambar Baru</label>
+                            <input type="file"
+                                   class="form-control @error('gambar_produk') is-invalid @enderror"
+                                   id="gambar_produk"
+                                   name="gambar_produk[]"
+                                   accept="image/*"
+                                   multiple>
                             <small class="form-text text-muted">
-                                Pilih satu atau beberapa gambar baru untuk ditambahkan (JPG, PNG, GIF, maks 2MB per file)
+                                Pilih satu atau lebih gambar baru untuk ditambahkan (format JPG, PNG, GIF, maks 2MB per file, maksimal 10 gambar). Kosongkan jika tidak ingin menambah.
                             </small>
-                            @error('gambar_produk.*')
+                            @error('gambar_produk')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary" id="updateBtn">Update</button>
                         <a href="{{ route('admin.produks.index') }}" class="btn btn-secondary">Batal</a>
                     </form>
                 </div>
@@ -155,3 +147,5 @@
         </div>
     </div>
 @endsection
+
+
