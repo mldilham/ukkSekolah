@@ -104,7 +104,7 @@
                             <td>{{ $produk->stok }}</td>
                             <td>{{ $produk->tanggal_upload->format('d/m/Y') }}</td>
                             <td>
-                                <a href="{{ route('admin.produks.show', $produk->id_produk) }}" target="_blank" class="btn btn-sm btn-info mb-1">
+                                <a href="{{ route('produks.show', $produk->id_produk) }}" target="_blank" class="btn btn-sm btn-info mb-1">
                                     <i class="fas fa-eye"></i> Lihat
                                 </a>
                                 <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning mb-1">

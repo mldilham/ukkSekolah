@@ -122,5 +122,5 @@ Route::prefix('member')->name('member.')->middleware('role:member')->group(funct
 // ===============================
 Route::get('/tokos', [PublicController::class, 'indexToko'])->name('public.tokos.index');
 Route::get('/tokos/{id_toko}', [PublicController::class, 'showToko'])->name('tokos.show');
-Route::get('/produks', [PublicController::class, 'indexProduk'])->name('public.produks.index');
+Route::get('/produks/home', [PublicController::class, 'indexProduk'])->name('public.produks.index');
 Route::get('/produks/{id}', [PublicController::class, 'showProduk'])->name('produks.show');
