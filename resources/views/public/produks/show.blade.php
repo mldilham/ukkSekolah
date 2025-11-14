@@ -1,9 +1,10 @@
 @extends('layouts.app')
 @section('content')
-<div class="container-fluid">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
+<div class="container py-4">
+
+    <!-- Breadcumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb premium-breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
             <li class="breadcrumb-item"><a href="{{ route('public.produks.index') }}">Produk</a></li>
             <li class="breadcrumb-item active">{{ $produk->nama_produk }}</li>
@@ -11,236 +12,254 @@
     </nav>
 
     <div class="row">
-        <!-- Product Gallery -->
-        <div class="col-lg-6">
-            <div class="product-gallery">
-                @if($produk->gambarProduks->isNotEmpty())
-                    <!-- Main Image -->
-                    <div class="main-image-container mb-3">
-                        <img id="mainImage"
-                             src="{{ asset('storage/produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                             alt="{{ $produk->nama_produk }}"
-                             class="img-fluid main-product-image">
-                    </div>
 
-                    <!-- Thumbnail Gallery -->
-                    @if($produk->gambarProduks->count() > 1)
-                        <div class="thumbnail-gallery">
-                            @foreach($produk->gambarProduks as $index => $gambar)
-                                <img src="{{ asset('storage/produks/' . $gambar->nama_gambar) }}"
-                                     alt="{{ $produk->nama_produk }}"
-                                     class="thumbnail-image {{ $index == 0 ? 'active' : '' }}"
-                                     onclick="changeMainImage('{{ asset('storage/produks/' . $gambar->nama_gambar) }}', this)">
-                            @endforeach
+        <!-- LEFT PRODUCT GALLERY -->
+        <div class="col-lg-5 mb-4">
+
+            <div class="gallery-card shadow-sm">
+
+                <!-- Main image -->
+                <div class="main-img-wrap">
+                    <img id="mainImage"
+                         src="{{ asset('storage/produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
+                         class="main-img">
+                </div>
+
+                <!-- Thumbnails -->
+                <div class="thumbnail-list mt-3">
+                    @foreach($produk->gambarProduks as $index => $gambar)
+                        <div class="thumb-item">
+                            <img src="{{ asset('storage/produks/' . $gambar->nama_gambar) }}"
+                                 onclick="changeMainImage('{{ asset('storage/produks/' . $gambar->nama_gambar) }}', this)"
+                                 class="thumb-img {{ $index == 0 ? 'active' : '' }}">
                         </div>
+                    @endforeach
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PRODUCT CONTENT -->
+        <div class="col-lg-7">
+
+            <div class="product-header mb-3">
+                <h1 class="product-title">{{ $produk->nama_produk }}</h1>
+
+                <div class="price-box">
+                    <h2 class="price-main">Rp {{ number_format($produk->harga, 0, ',', '.') }}</h2>
+                </div>
+            </div>
+
+            <!-- Stock Info -->
+            <div class="stock-box mb-4">
+                <span class="stock-label">Stok :</span>
+                <span class="stock-value">
+                    {{ $produk->stok }} {{ $produk->stok > 0 ? 'Tersedia' : 'Habis' }}
+                </span>
+            </div>
+
+            <!-- STORE CARD (Shopee Style) -->
+            <div class="store-card shadow-sm mb-4">
+                <div class="store-left">
+                    @if($produk->toko->gambar)
+                        <img src="{{ asset('storage/tokos/'. $produk->toko->gambar) }}" class="store-avatar">
+                    @else
+                        <img src="{{ asset('template/img/undraw_profile.svg') }}" class="store-avatar">
                     @endif
-                @else
-                    <div class="no-image-placeholder">
-                        <img src="{{ asset('template/img/undraw_posting_photo.svg') }}" alt="No Image" class="img-fluid">
-                        <p class="text-muted mt-3">Tidak ada gambar untuk produk ini</p>
+
+                    <div>
+                        <h5 class="store-name">
+                            {{ $produk->toko->nama_toko }}
+                        </h5>
                     </div>
+                </div>
+
+                <div class="store-right">
+                    <a href="{{ route('public.tokos.show', $produk->toko->id_toko) }}"
+                       class="btn store-btn">
+                       Kunjungi Toko
+                    </a>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="action-box">
+
+                @if($produk->stok > 0)
+                    <a href="https://wa.me/{{ $produk->toko->kontak_toko }}?text=Halo saya ingin membeli {{ urlencode($produk->nama_produk) }}"
+                       target="_blank"
+                       class="btn btn-chat">
+                        <i class="fab fa-whatsapp"></i> Chat Penjual
+                    </a>
+                @else
+                    <button class="btn btn-secondary btn-block mb-2" disabled>Stok Habis</button>
                 @endif
             </div>
-        </div>
 
-        <!-- Product Information -->
-        <div class="col-lg-6">
-            <div class="product-info">
-                <!-- Product Name -->
-                <h1 class="product-title mb-2">{{ $produk->nama_produk }}</h1>
-
-                <!-- Category -->
-                <div class="category-badge mb-3">
-                    <span class="badge badge-primary">{{ $produk->kategori->nama_kategori ?? 'N/A' }}</span>
-                </div>
-
-                <!-- Price -->
-                <div class="price-section mb-4">
-                    <h2 class="product-price text-success mb-0">Rp {{ number_format($produk->harga, 0, ',', '.') }}</h2>
-                </div>
-
-                <!-- Stock -->
-                <div class="stock-info mb-3">
-                    <span class="stock-label">Stok:</span>
-                    <span class="stock-value {{ $produk->stok > 0 ? 'text-success' : 'text-danger' }}">
-                        {{ $produk->stok }} {{ $produk->stok > 0 ? 'Tersedia' : 'Habis' }}
-                    </span>
-                </div>
-
-                <!-- Store Information -->
-                <div class="store-info mb-4 p-3 bg-light rounded">
-                    <h5 class="store-name mb-2">
-                        <i class="fas fa-store text-primary"></i>
-                        <a href="{{ route('public.tokos.show', $produk->toko->id_toko) }}" class="text-decoration-none">
-                            {{ $produk->toko->nama_toko ?? 'N/A' }}
-                        </a>
-                    </h5>
-                    @if($produk->toko)
-                        <div class="store-details">
-                            <p class="mb-1">
-                                <i class="fas fa-user text-muted"></i>
-                                <small class="text-muted">Pemilik: {{ $produk->toko->user->nama ?? 'N/A' }}</small>
-                            </p>
-                            <p class="mb-1">
-                                <i class="fas fa-phone text-muted"></i>
-                                <small class="text-muted">Kontak: {{ $produk->toko->kontak_toko ?? 'N/A' }}</small>
-                            </p>
-                            <p class="mb-0">
-                                <i class="fas fa-map-marker-alt text-muted"></i>
-                                <small class="text-muted">Alamat: {{ $produk->toko->alamat ?? 'N/A' }}</small>
-                            </p>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Additional Information -->
-                <div class="additional-info mb-4">
-                    <div class="info-item">
-                        <strong>ID Produk:</strong> {{ $produk->id_produk }}
-                    </div>
-                    <div class="info-item">
-                        <strong>Tanggal Upload:</strong> {{ $produk->tanggal_upload->format('d M Y, H:i') }}
-                    </div>
-                </div>
-
-                <!-- Product Description -->
-                <div class="product-description mb-4">
-                    <h5>Deskripsi Produk</h5>
-                    <p class="description-text">{{ $produk->deskripsi ?? 'Tidak ada deskripsi untuk produk ini.' }}</p>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    @if($produk->stok > 0 && $produk->toko->kontak_toko)
-                        <a href="https://wa.me/{{ $produk->toko->kontak_toko }}?text=Halo, saya tertarik dengan produk {{ urlencode($produk->nama_produk) }} yang dijual di toko {{ urlencode($produk->toko->nama_toko) }}. Apakah masih tersedia?"
-                           target="_blank" class="btn btn-success btn-lg btn-block mb-2">
-                            <i class="fab fa-whatsapp"></i> Pesan via WhatsApp
-                        </a>
-                    @else
-                        <button class="btn btn-secondary btn-lg btn-block mb-2" disabled>
-                            <i class="fas fa-times"></i> Stok Habis
-                        </button>
-                    @endif
-
-                    <a href="{{ route('public.tokos.show', $produk->toko->id_toko) }}" class="btn btn-info btn-lg btn-block mb-2">
-                        <i class="fas fa-store"></i> Lihat Toko
-                    </a>
-
-                    <a href="{{ route('public.produks.index') }}" class="btn btn-outline-primary btn-lg btn-block">
-                        <i class="fas fa-arrow-left"></i> Kembali ke Produk
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
+
+    <!-- DESCRIPTION CARD -->
+    <div class="description-card shadow-sm mt-4 p-4">
+        <h5 class="desc-title">Deskripsi Produk</h5>
+        <p class="desc-text">{{ $produk->deskripsi }}</p>
+    </div>
+
 </div>
 
 <script>
-    function changeMainImage(src, element) {
-        document.getElementById('mainImage').src = src;
-        // Remove active class from all thumbnails
-        document.querySelectorAll('.thumbnail-image').forEach(img => {
-            img.classList.remove('active');
-        });
-        // Add active class to clicked thumbnail
-        element.classList.add('active');
-    }
+function changeMainImage(src, el) {
+    document.getElementById("mainImage").src = src;
+    document.querySelectorAll('.thumb-img').forEach(i => i.classList.remove("active"));
+    el.classList.add("active");
+}
 </script>
 
 <style>
-    .product-gallery {
-        position: sticky;
-        top: 20px;
-    }
+/* ============================================================= */
+/* SHOPEE PREMIUM THEME #EE6983 */
+/* ============================================================= */
+:root {
+    --primary: #EE6983;
+    --primary-dark: #d45b72;
+    --soft-bg: #fff5f7;
+}
 
-    .main-product-image {
-        width: 100%;
-        max-height: 500px;
-        object-fit: cover;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+/* Breadcrumb */
+.premium-breadcrumb {
+    background: #fff;
+    border-radius: 6px;
+    padding: 8px 14px;
+}
 
-    .thumbnail-gallery {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        padding: 10px 0;
-    }
+/* Gallery Card */
+.gallery-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+}
 
-    .thumbnail-image {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 4px;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: border-color 0.3s ease;
-    }
+.main-img-wrap {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-    .thumbnail-image:hover,
-    .thumbnail-image.active {
-        border-color: #007bff;
-    }
+.main-img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    max-height: 430px;
+}
 
-    .product-title {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #333;
-    }
+.thumbnail-list {
+    display: flex;
+    gap: 8px;
+}
 
-    .product-price {
-        font-size: 2rem;
-        font-weight: 700;
-    }
+.thumb-item {}
 
-    .stock-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+.thumb-img {
+    width: 62px;
+    height: 62px;
+    border-radius: 6px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
 
-    .stock-label {
-        font-weight: 600;
-        color: #666;
-    }
+.thumb-img.active,
+.thumb-img:hover {
+    border-color: var(--primary);
+}
 
-    .store-info {
-        border-left: 4px solid #007bff;
-    }
+/* Product text */
+.product-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
 
-    .store-name {
-        color: #007bff;
-        font-weight: 600;
-    }
+.price-main {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 2rem;
+}
 
-    .product-description h5 {
-        color: #333;
-        border-bottom: 2px solid #f8f9fa;
-        padding-bottom: 8px;
-    }
+/* Store card */
+.store-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .description-text {
-        line-height: 1.6;
-        color: #666;
-    }
+.store-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
 
-    .action-buttons .btn {
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+.store-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+}
 
-    .no-image-placeholder {
-        text-align: center;
-        padding: 40px;
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
+.store-name {
+    margin: 0;
+    font-weight: 700;
+}
 
-    .breadcrumb {
-        background: #f8f9fa;
-        border-radius: 4px;
-    }
+.store-rating {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.store-btn {
+    background: var(--primary);
+    color: #fff;
+    padding: 6px 16px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.store-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* Buttons Shopee style */
+.action-box .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.btn-chat {
+    background: #25D366 !important;
+    color: #fff;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.description-card {
+    background: #fff;
+    border-radius: 14px;
+}
+
+.desc-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.desc-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+}
 </style>
 @endsection

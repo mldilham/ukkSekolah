@@ -15,6 +15,7 @@ class GambarProduk extends Model
     protected $fillable = [
         'id_produk',
         'nama_gambar',
+        'gambar',
     ];
 
     public function produk()

@@ -17,7 +17,7 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -112,7 +112,7 @@
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             border-radius: 10px;
             font-weight: 500;
@@ -124,13 +124,17 @@
         }
 
         .btn-success:hover {
-            background: linear-gradient(135deg, #218838 0%, #17a589 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
         .btn-success:active {
             transform: translateY(0);
+        }
+
+        .btn-success:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
         }
 
         .alert {
@@ -184,14 +188,14 @@
         }
 
         .card-footer a {
-            color: #28a745;
+            color: #667eea;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
 
         .card-footer a:hover {
-            color: #20c997;
+            color: #764ba2;
             text-decoration: underline;
         }
 
@@ -333,7 +337,7 @@
             </div>
 
             <div class="card-footer">
-                <p class="mb-0">
+                <p class="login-link mb-0">
                     Sudah punya akun?
                     <a href="{{ route('login') }}">Login di sini</a>
                 </p>
