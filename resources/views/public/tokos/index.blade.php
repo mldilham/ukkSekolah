@@ -47,7 +47,7 @@
                         </p>
 
                         <div class="mt-auto">
-                            <a href="{{ route('tokos.show', $toko->id_toko) }}"
+                            <a href="{{ route('public.tokos.show', $toko->id_toko) }}"
                                class="btn btn-primary btn-sm w-100 mb-2">
                                 <i class="fas fa-eye"></i> Lihat Toko
                             </a>

@@ -102,7 +102,7 @@
                                 </small>
                             </div>
 
-                            <a href="{{ route('produks.show', $produk->id_produk) }}"
+                            <a href="{{ route('public.produks.show', $produk->id_produk) }}"
                                class="btn btn-primary btn-sm w-100 mb-2">
                                 <i class="fas fa-eye"></i> Lihat Detail
                             </a>

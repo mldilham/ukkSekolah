@@ -71,7 +71,7 @@
                 <div class="store-info mb-4 p-3 bg-light rounded">
                     <h5 class="store-name mb-2">
                         <i class="fas fa-store text-primary"></i>
-                        <a href="{{ route('tokos.show', $produk->toko->id_toko) }}" class="text-decoration-none">
+                        <a href="{{ route('public.tokos.show', $produk->toko->id_toko) }}" class="text-decoration-none">
                             {{ $produk->toko->nama_toko ?? 'N/A' }}
                         </a>
                     </h5>
@@ -122,7 +122,7 @@
                         </button>
                     @endif
 
-                    <a href="{{ route('tokos.show', $produk->toko->id_toko) }}" class="btn btn-info btn-lg btn-block mb-2">
+                    <a href="{{ route('public.tokos.show', $produk->toko->id_toko) }}" class="btn btn-info btn-lg btn-block mb-2">
                         <i class="fas fa-store"></i> Lihat Toko
                     </a>
 

@@ -123,6 +123,6 @@ Route::prefix('member')->name('member.')->middleware('role:member')->group(funct
 // 🏪 TOKO PUBLIC PROFILE (untuk semua user)
 // ===============================
 Route::get('/tokos', [PublicController::class, 'indexToko'])->name('public.tokos.index');
-Route::get('/tokos/{id_toko}', [PublicController::class, 'showToko'])->name('tokos.show');
+Route::get('/tokos/{id_toko}', [PublicController::class, 'showToko'])->name('public.tokos.show');
 Route::get('/produks/home', [PublicController::class, 'indexProduk'])->name('public.produks.index');
-Route::get('/produks/{id}', [PublicController::class, 'showProduk'])->name('produks.show');
+Route::get('/produks/{id}', [PublicController::class, 'showProduk'])->name('public.produks.show');

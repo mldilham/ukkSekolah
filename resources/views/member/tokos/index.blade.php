@@ -47,7 +47,7 @@
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold text-primary">Informasi Toko</h6>
                         <div>
-                            <a href="{{ route('tokos.show', $toko->id_toko) }}" target="_blank" class="btn btn-sm btn-info">
+                            <a href="{{ route('public.tokos.show', $toko->id_toko) }}" target="_blank" class="btn btn-sm btn-info">
                                 <i class="fas fa-eye"></i> Lihat Profil Publik
                             </a>
                             <a href="{{ route('member.tokos.edit') }}" class="btn btn-sm btn-warning">

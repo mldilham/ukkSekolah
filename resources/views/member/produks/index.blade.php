@@ -87,7 +87,7 @@
                                     <td>{{ $produk->stok }}</td>
                                     <td>{{ $produk->tanggal_upload->format('d/m/Y') }}</td>
                                     <td>
-                                        <a href="{{ route('produks.show', $produk->id_produk) }}?produk={{ $produk->id_produk }}" class="btn btn-sm btn-info mb-1" target="_blank">
+                                        <a href="{{ route('publi.produks.show', $produk->id_produk) }}?produk={{ $produk->id_produk }}" class="btn btn-sm btn-info mb-1" target="_blank">
                                             <i class="fas fa-eye"></i> Lihat
                                         </a>
                                         <a href="{{ route('member.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning mb-1">
