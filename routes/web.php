@@ -39,6 +39,8 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
+    Route::post('/users/{id}/reject', [UserController::class, 'reject'])->name('users.reject');
 
     // Alias route untuk kompatibilitas
     Route::get('/users', [UserController::class, 'index'])->name('users');

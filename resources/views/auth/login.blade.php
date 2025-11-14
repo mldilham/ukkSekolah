@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -270,22 +271,25 @@
 
         <div class="card-body">
             @if($errors->any())
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    <strong>Error:</strong>
-                    <ul class="mb-0 mt-1">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+                <script>
+                    Swal.fire({
+                        title: "Login Gagal!",
+                        text: "{{ $errors->first() }}",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                </script>
             @endif
 
             @if(session('success'))
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle me-2"></i>
-                    {{ session('success') }}
-                </div>
+                <script>
+                    Swal.fire({
+                        title: "Berhasil!",
+                        text: "{{ session('success') }}",
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    });
+                </script>
             @endif
 
             <form method="POST" action="{{ route('login') }}">

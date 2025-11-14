@@ -74,6 +74,20 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control @error('status') is-invalid @enderror"
+                                    id="status" name="status" required>
+                                <option value="">Pilih Status</option>
+                                <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="approved" {{ old('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <a href="{{ route('admin.users') }}" class="btn btn-secondary">Batal</a>
                     </form>

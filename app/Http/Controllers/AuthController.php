@@ -28,6 +28,14 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
+            // Cek status user
+            if ($user->status !== 'approved') {
+                Auth::logout();
+                return back()->withErrors([
+                    'username' => 'Akun Anda belum disetujui oleh admin.',
+                ])->withInput($request->only('username'));
+            }
+
             // Redirect berdasarkan role
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', 'Login berhasil sebagai Admin.');
@@ -63,9 +71,10 @@ class AuthController extends Controller
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'role' => 'member', // Default role untuk register adalah member
+            'status' => 'pending', // Status pending menunggu konfirmasi admin
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Tunggu konfirmasi dari admin untuk dapat login.');
     }
 
     // Proses logout

@@ -1,5 +1,34 @@
 @extends('member.layouts.app')
 @section('content')
+    <!-- SweetAlert2 Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Success Alert for Produk Actions -->
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                title: "Berhasil!",
+                text: "{{ session('success') }}",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000,
+                timerProgressBar: true
+            });
+        </script>
+    @endif
+
+    <!-- Error Alert for Produk Actions -->
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                title: "Gagal!",
+                text: "{{ session('error') }}",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        </script>
+    @endif
+
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Manajemen Produk</h1>
@@ -7,24 +36,6 @@
             <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Produk
         </a>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">

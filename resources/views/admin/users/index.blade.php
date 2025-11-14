@@ -1,5 +1,34 @@
 @extends('admin.layouts.app')
 @section('content')
+    <!-- SweetAlert2 Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Success Alert for User Actions -->
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                title: "Berhasil!",
+                text: "{{ session('success') }}",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000,
+                timerProgressBar: true
+            });
+        </script>
+    @endif
+
+    <!-- Error Alert for User Actions -->
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                title: "Gagal!",
+                text: "{{ session('error') }}",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        </script>
+    @endif
+
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Manajemen Users</h1>
@@ -23,6 +52,7 @@
                             <th>Kontak</th>
                             <th>Username</th>
                             <th>Role</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -39,16 +69,40 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('admin.users.edit', $user->id_user) }}" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.users.destroy', $user->id_user) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                @if($user->status == 'pending')
+                                    <span class="badge badge-warning">Pending</span>
+                                @elseif($user->status == 'approved')
+                                    <span class="badge badge-success">Disetujui</span>
+                                @elseif($user->status == 'rejected')
+                                    <span class="badge badge-danger">Ditolak</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($user->status == 'pending')
+                                    <form action="{{ route('admin.users.approve', $user->id_user) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Setujui user ini?')">
+                                            <i class="fas fa-check"></i> Setujui
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('admin.users.reject', $user->id_user) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tolak user ini?')">
+                                            <i class="fas fa-times"></i> Tolak
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('admin.users.edit', $user->id_user) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="{{ route('admin.users.destroy', $user->id_user) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

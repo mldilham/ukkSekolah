@@ -1,5 +1,22 @@
 @extends('admin.layouts.app')
 @section('content')
+    <!-- SweetAlert2 Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Success Alert for Login -->
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                title: "Login Berhasil!",
+                text: "{{ session('success') }}",
+                icon: "success",
+                confirmButtonText: "OK",
+                timer: 3000,
+                timerProgressBar: true
+            });
+        </script>
+    @endif
+
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard Admin</h1>

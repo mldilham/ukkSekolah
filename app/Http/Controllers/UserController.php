@@ -31,6 +31,7 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,member',
+            'status' => 'required|in:pending,approved,rejected',
         ]);
 
         User::create([
@@ -70,7 +71,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,member',
         ]);
 
-        $data = $request->only(['nama', 'kontak', 'username', 'role']);
+        $data = $request->only(['nama', 'kontak', 'username', 'role', 'status']);
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
@@ -89,5 +90,38 @@ class UserController extends Controller
 
         return redirect()->route('admin.users')
             ->with('success', 'User berhasil dihapus.');
+    }
+
+    // ===============================
+    // APPROVE/REJECT USER
+    // ===============================
+    public function approve($id)
+    {
+        $user = User::where('id_user', $id)->firstOrFail();
+
+        if ($user->status !== 'pending') {
+            return redirect()->route('admin.users')
+                ->with('error', 'User sudah diproses sebelumnya.');
+        }
+
+        $user->update(['status' => 'approved']);
+
+        return redirect()->route('admin.users')
+            ->with('success', 'User berhasil disetujui.');
+    }
+
+    public function reject($id)
+    {
+        $user = User::where('id_user', $id)->firstOrFail();
+
+        if ($user->status !== 'pending') {
+            return redirect()->route('admin.users')
+                ->with('error', 'User sudah diproses sebelumnya.');
+        }
+
+        $user->update(['status' => 'rejected']);
+
+        return redirect()->route('admin.users')
+            ->with('success', 'User berhasil ditolak.');
     }
 }
