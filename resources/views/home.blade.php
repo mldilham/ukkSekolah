@@ -5,6 +5,7 @@
 {{-- ============================= --}}
 {{--         HERO CAROUSEL         --}}
 {{-- ============================= --}}
+@if($produks->count() > 0)
 <div class="d-flex justify-content-center mt-4">
     <div class="carousel-container">
         <div id="heroCarousel" class="carousel slide" data-ride="carousel">
@@ -44,6 +45,20 @@
         </div>
     </div>
 </div>
+@else
+<div class="d-flex justify-content-center mt-4">
+    <div class="empty-state-card">
+        <div class="empty-state-content">
+            <i class="fas fa-shopping-bag fa-4x text-muted mb-4"></i>
+            <h3 class="empty-state-title">Belum Ada Produk</h3>
+            <p class="empty-state-text">Produk-produk menarik akan segera hadir di marketplace ini.</p>
+            <a href="{{ route('public.produks.index') }}" class="btn btn-market">
+                <i class="fas fa-search"></i> Jelajahi Produk
+            </a>
+        </div>
+    </div>
+</div>
+@endif
 
 <style>
     /* =======================================
@@ -126,11 +141,39 @@
         color: var(--primary);
         margin-bottom: 14px;
     }
+
+    /* Empty State */
+    .empty-state-card {
+        background: white;
+        border-radius: 20px;
+        padding: 60px 40px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .empty-state-content {
+        padding: 20px;
+    }
+
+    .empty-state-title {
+        color: var(--text-dark);
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .empty-state-text {
+        color: var(--text-light);
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
 </style>
 
 {{-- ============================= --}}
 {{--       KATEGORI PRODUK         --}}
 {{-- ============================= --}}
+@if($kategoris->count() > 0)
 <div class="container my-5">
     <h4 class="section-title">Kategori Pilihan</h4>
 
@@ -151,42 +194,59 @@
         @endforeach
     </div>
 </div>
+@else
+<div class="container my-5">
+    <div class="empty-state-card">
+        <div class="empty-state-content">
+            <i class="fas fa-tags fa-4x text-muted mb-4"></i>
+            <h3 class="empty-state-title">Belum Ada Kategori</h3>
+            <p class="empty-state-text">Kategori produk akan segera ditambahkan untuk memudahkan pencarian.</p>
+            <a href="{{ route('public.produks.index') }}" class="btn btn-market">
+                <i class="fas fa-search"></i> Lihat Semua Produk
+            </a>
+        </div>
+    </div>
+</div>
+@endif
 
 {{-- ============================= --}}
 {{--        PRODUK TERBARU         --}}
 {{-- ============================= --}}
+@if($produks->count() > 0)
 <div class="py-5" style="background: var(--primary-soft)">
     <div class="container">
         <h4 class="section-title">Rekomendasi Untuk Anda</h4>
 
         <div class="row justify-content-center">
             @foreach($produks as $produk)
-                <div class="col-md-3 col-sm-6 mb-4 d-flex align-items-stretch">
-                    <div class="card product-card h-100">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card product-card" style="height: 380px;">
 
                         @if($produk->gambarProduks->isNotEmpty())
                             <img src="{{ asset('storage/produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
                                  class="card-img-top"
-                                 style="height: 180px; object-fit: cover;">
+                                 style="height: 200px; object-fit: cover; width: 100%;">
                         @else
                             <img src="{{ asset('template/img/undraw_posting_photo.svg') }}"
                                  class="card-img-top"
-                                 style="height: 180px; object-fit: cover;">
+                                 style="height: 200px; object-fit: cover; width: 100%;">
                         @endif
 
-                        <div class="card-body">
-                            <p class="mb-1" style="font-size: 15px; font-weight: 600;">
-                                {{ Str::limit($produk->nama, 35) }}
-                            </p>
-                            <p class="mb-1" style="font-size: 16px; font-weight: 700; color: var(--primary)">
-                                Rp {{ number_format($produk->harga, 0, ',', '.') }}
-                            </p>
-                            <p class="text-muted small mb-3">
-                                {{ $produk->toko->nama_toko ?? 'Toko' }}
-                            </p>
+                        <div class="card-body d-flex flex-column" style="height: 180px;">
+                            <div class="flex-grow-1">
+                                <p class="mb-1 product-title" style="font-size: 15px; font-weight: 600; min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ $produk->nama_produk }}
+                                </p>
+                                <p class="mb-1 product-price" style="font-size: 16px; font-weight: 700; color: var(--primary)">
+                                    Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                                </p>
+                                <p class="text-muted small product-store" style="min-height: 20px;">
+                                    {{ Str::limit($produk->toko->nama_toko ?? 'Toko', 25) }}
+                                </p>
+                            </div>
 
                             <a href="{{ route('public.produks.show', $produk->id_produk) }}"
-                               class="btn btn-market btn-sm w-100">
+                               class="btn btn-market btn-sm w-100 mt-auto">
                                 Detail
                             </a>
                         </div>
@@ -197,10 +257,27 @@
 
     </div>
 </div>
+@else
+<div class="py-5" style="background: var(--primary-soft)">
+    <div class="container">
+        <div class="empty-state-card">
+            <div class="empty-state-content">
+                <i class="fas fa-box-open fa-4x text-muted mb-4"></i>
+                <h3 class="empty-state-title">Belum Ada Produk</h3>
+                <p class="empty-state-text">Produk-produk menarik akan segera hadir di marketplace ini.</p>
+                <a href="{{ route('public.produks.index') }}" class="btn btn-market">
+                    <i class="fas fa-search"></i> Jelajahi Produk
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
     {{-- ============================= --}}
     {{--         TOKO Terpercaya          --}}
     {{-- ============================= --}}
+    @if($tokos->count() > 0)
     <div class="container my-5">
         <h4 class="section-title">Toko Terpercaya</h4>
 
@@ -223,5 +300,19 @@
         @endforeach
     </div>
 </div>
+@else
+<div class="container my-5">
+    <div class="empty-state-card">
+        <div class="empty-state-content">
+            <i class="fas fa-store fa-4x text-muted mb-4"></i>
+            <h3 class="empty-state-title">Belum Ada Toko</h3>
+            <p class="empty-state-text">Toko-toko terpercaya akan segera bergabung dengan marketplace ini.</p>
+            <a href="{{ route('public.tokos.index') }}" class="btn btn-market">
+                <i class="fas fa-search"></i> Jelajahi Toko
+            </a>
+        </div>
+    </div>
+</div>
+@endif
 
 @endsection

@@ -20,21 +20,29 @@
 
                 <!-- Main image -->
                 <div class="main-img-wrap">
-                    <img id="mainImage"
-                         src="{{ asset('storage/produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                         class="main-img">
+                    @if($produk->gambarProduks->isNotEmpty())
+                        <img id="mainImage"
+                             src="{{ asset('storage/produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
+                             class="main-img">
+                    @else
+                        <img id="mainImage"
+                             src="{{ asset('template/img/undraw_posting_photo.svg') }}"
+                             class="main-img">
+                    @endif
                 </div>
 
                 <!-- Thumbnails -->
-                <div class="thumbnail-list mt-3">
-                    @foreach($produk->gambarProduks as $index => $gambar)
-                        <div class="thumb-item">
-                            <img src="{{ asset('storage/produks/' . $gambar->nama_gambar) }}"
-                                 onclick="changeMainImage('{{ asset('storage/produks/' . $gambar->nama_gambar) }}', this)"
-                                 class="thumb-img {{ $index == 0 ? 'active' : '' }}">
-                        </div>
-                    @endforeach
-                </div>
+                @if($produk->gambarProduks->count() > 1)
+                    <div class="thumbnail-list mt-3">
+                        @foreach($produk->gambarProduks as $index => $gambar)
+                            <div class="thumb-item">
+                                <img src="{{ asset('storage/produks/' . $gambar->nama_gambar) }}"
+                                     onclick="changeMainImage('{{ asset('storage/produks/' . $gambar->nama_gambar) }}', this)"
+                                     class="thumb-img {{ $index == 0 ? 'active' : '' }}">
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
 
             </div>
 
@@ -148,9 +156,9 @@ function changeMainImage(src, el) {
 
 .main-img {
     width: 100%;
+    height: 400px;
     border-radius: 8px;
     object-fit: cover;
-    max-height: 430px;
 }
 
 .thumbnail-list {

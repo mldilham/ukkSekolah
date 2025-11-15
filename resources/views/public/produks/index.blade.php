@@ -169,7 +169,7 @@
 
                         <div class="p-3">
                             <h5 class="product-title mb-1">
-                                {{ Str::limit($produk->nama_produk, 45) }}
+                                {{ Str::limit($produk->nama_produk, 20) }}
                             </h5>
 
                             <div class="d-flex justify-content-between mb-2">
