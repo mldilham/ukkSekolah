@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Crypt;
 
 class KategoriController extends Controller
 {
@@ -36,13 +37,25 @@ class KategoriController extends Controller
 
     public function edit($id)
     {
-        $kategori = Kategori::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $kategori = Kategori::findOrFail($decryptedId);
         return view('admin.kategoris.edit', compact('kategori'));
     }
 
     public function update(Request $request, $id)
     {
-        $kategori = Kategori::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $kategori = Kategori::findOrFail($decryptedId);
 
         $request->validate([
             'nama_kategori' => ['required', 'string', 'max:255', Rule::unique('kategoris')->ignore($kategori->id_kategori, 'id_kategori')],
@@ -56,7 +69,13 @@ class KategoriController extends Controller
 
     public function destroy($id)
     {
-        $kategori = Kategori::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $kategori = Kategori::findOrFail($decryptedId);
 
         // Cek apakah kategori masih digunakan oleh produk
         if ($kategori->produks()->exists()) {

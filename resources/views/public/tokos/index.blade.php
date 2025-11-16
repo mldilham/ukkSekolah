@@ -155,7 +155,7 @@
                 {{-- Actions --}}
                 <div class="store-actions">
 
-                    <a href="{{ route('public.tokos.show', $toko->id_toko) }}" class="btn-visit">
+                    <a href="{{ route('public.tokos.show', Crypt::encrypt($toko->id_toko)) }}" class="btn-visit">
                         <i class="fas fa-store"></i> Kunjungi
                     </a>
 

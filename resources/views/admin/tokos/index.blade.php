@@ -76,13 +76,13 @@
                             <td>{{ $toko->kontak_toko }}</td>
                             <td>{{ Str::limit($toko->alamat, 50) }}</td>
                             <td>
-                                <a href="{{ route('public.tokos.show', $toko->id_toko) }}" target="_blank" class="btn btn-sm btn-info">
+                                <a href="{{ route('public.tokos.show', Crypt::encrypt($toko->id_toko)) }}" target="_blank"  class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i> Lihat
                                 </a>
-                                <a href="{{ route('admin.tokos.edit', $toko->id_toko) }}" class="btn btn-sm btn-warning">
+                                <a href="{{ route('admin.tokos.edit', Crypt::encrypt($toko->id_toko)) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.tokos.destroy', $toko->id_toko) }}" method="POST" class="d-inline">
+                                <form action="{{ route('admin.tokos.destroy', Crypt::encrypt($toko->id_toko)) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus toko ini?')">

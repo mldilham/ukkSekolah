@@ -58,10 +58,10 @@
                             <td>{{ $kategori->id_kategori }}</td>
                             <td>{{ $kategori->nama_kategori }}</td>
                             <td>
-                                <a href="{{ route('admin.kategoris.edit', $kategori->id_kategori) }}" class="btn btn-sm btn-warning">
+                                <a href="{{ route('admin.kategoris.edit', Crypt::encrypt($kategori->id_kategori)) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.kategoris.destroy', $kategori->id_kategori) }}" method="POST" class="d-inline">
+                                <form action="{{ route('admin.kategoris.destroy', Crypt::encrypt($kategori->id_kategori)) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">

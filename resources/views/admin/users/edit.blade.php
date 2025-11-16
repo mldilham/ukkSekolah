@@ -15,7 +15,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Edit User</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.users.update', $user->id_user) }}" method="POST">
+                    <form action="{{ route('admin.users.update', Crypt::encrypt($user->id_user)) }}" method="POST">
                         @csrf
                         @method('PUT')
 

@@ -245,7 +245,7 @@
                                     </p>
                                 </div>
 
-                                <a href="{{ route('public.produks.show', $produk->id_produk) }}"
+                                <a href="{{ route('public.produks.show', Crypt::encrypt($produk->id_produk)) }}"
                                 class="btn btn-market btn-sm w-100 mt-auto">
                                     Detail
                                 </a>
@@ -299,7 +299,7 @@
                             <img src="{{ asset('template/img/undraw_profile.svg') }}" alt="Default Store" class="card-img-top mb-3 rounded-circle mx-auto d-block" style="width: 80px; height: 80px; object-fit: cover;">
                         @endif
                         <h5 class="fw-bold">{{ $toko->nama_toko }}</h5>
-                        <a href="{{ route('public.tokos.show', $toko->id_toko) }}"
+                        <a href="{{ route('public.tokos.show', Crypt::encrypt($toko->id_toko)) }}"
                         class="btn btn-market mt-2 px-3">
                             Kunjungi Toko
                         </a>

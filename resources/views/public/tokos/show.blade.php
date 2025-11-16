@@ -501,7 +501,7 @@ body {
                                     <div class="product-price">Rp {{ number_format($produk->harga, 0, ',', '.') }}</div>
 
                                     <div class="product-actions">
-                                        <a href="{{ route('public.produks.show', $produk->id_produk) }}" class="btn-detail">
+                                        <a href="{{ route('public.produks.show', Crypt::encrypt($produk->id_produk)) }}" class="btn-detail">
                                             <i class="fas fa-eye me-1"></i> Lihat Detail
                                         </a>
 

@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="store-right">
-                    <a href="{{ route('public.tokos.show', $produk->toko->id_toko) }}"
+                    <a href="{{ route('public.tokos.show', Crypt::encrypt($produk->toko->id_toko)) }}"
                        class="btn store-btn">
                        Kunjungi Toko
                     </a>

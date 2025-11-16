@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTestimoniRequest;
 use App\Http\Requests\UpdateTestimoniRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
 
 class TestimoniController extends Controller
 {
@@ -55,16 +56,30 @@ class TestimoniController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Testimoni $testimoni)
+    public function edit($id)
     {
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $testimoni = Testimoni::findOrFail($decryptedId);
         return view('admin.testimonis.edit', compact('testimoni'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTestimoniRequest $request, Testimoni $testimoni)
+    public function update(UpdateTestimoniRequest $request, $id)
     {
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $testimoni = Testimoni::findOrFail($decryptedId);
         $data = $request->validated();
 
         if ($request->hasFile('foto')) {
@@ -83,8 +98,15 @@ class TestimoniController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Testimoni $testimoni)
+    public function destroy($id)
     {
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $testimoni = Testimoni::findOrFail($decryptedId);
         // Delete photo if exists
         if ($testimoni->foto && Storage::disk('public')->exists($testimoni->foto)) {
             Storage::disk('public')->delete($testimoni->foto);
@@ -98,8 +120,15 @@ class TestimoniController extends Controller
     /**
      * Toggle the status of the specified resource.
      */
-    public function toggleStatus(Testimoni $testimoni)
+    public function toggleStatus($id)
     {
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $testimoni = Testimoni::findOrFail($decryptedId);
         $testimoni->update([
             'is_active' => !$testimoni->is_active
         ]);

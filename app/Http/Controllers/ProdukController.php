@@ -8,6 +8,7 @@ use App\Models\Kategori;
 use App\Models\Toko;
 use App\Models\GambarProduk;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
 
 class ProdukController extends Controller
 {
@@ -83,7 +84,13 @@ class ProdukController extends Controller
 
     public function edit($id)
     {
-        $produk = Produk::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $produk = Produk::findOrFail($decryptedId);
         $kategoris = Kategori::all();
         $tokos = Toko::with('user')->get();
         return view('admin.produks.edit', compact('produk', 'kategoris', 'tokos'));
@@ -91,7 +98,13 @@ class ProdukController extends Controller
 
     public function update(Request $request, $id)
     {
-        $produk = Produk::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $produk = Produk::findOrFail($decryptedId);
 
         $request->validate([
             'id_kategori' => 'required|exists:kategoris,id_kategori',
@@ -139,7 +152,13 @@ class ProdukController extends Controller
 
     public function destroy($id)
     {
-        $produk = Produk::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $produk = Produk::findOrFail($decryptedId);
 
         // Hapus semua gambar produk terkait
         foreach ($produk->gambarProduks as $gambarProduk) {
@@ -155,7 +174,13 @@ class ProdukController extends Controller
 
     public function show($id)
     {
-        $produk = Produk::with(['kategori', 'toko', 'gambarProduks'])->findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $produk = Produk::with(['kategori', 'toko', 'gambarProduks'])->findOrFail($decryptedId);
         return view('admin.produks.show', compact('produk'));
     }
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
 
 class TokoController extends Controller
 {
@@ -67,7 +68,13 @@ class TokoController extends Controller
     // ===============================
     public function edit($id)
     {
-        $toko = Toko::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $toko = Toko::findOrFail($decryptedId);
         $users = User::where('role', 'member')->get();
         return view('admin.tokos.edit', compact('toko', 'users'));
     }
@@ -77,7 +84,13 @@ class TokoController extends Controller
     // ===============================
     public function update(Request $request, $id)
     {
-        $toko = Toko::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $toko = Toko::findOrFail($decryptedId);
 
         $request->validate([
             'nama_toko' => 'required|string|max:100',
@@ -123,7 +136,13 @@ class TokoController extends Controller
     // ===============================
     public function destroy($id)
     {
-        $toko = Toko::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $toko = Toko::findOrFail($decryptedId);
 
         // Hapus gambar toko kalau ada
         if ($toko->gambar && Storage::disk('public')->exists('tokos/' . $toko->gambar)) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -48,15 +49,27 @@ class UserController extends Controller
 
     public function edit($id)
     {
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
         // Gunakan id_user jika di tabel primary key-nya bukan id
-        $user = User::where('id_user', $id)->firstOrFail();
+        $user = User::where('id_user', $decryptedId)->firstOrFail();
 
         return view('admin.users.edit', compact('user'));
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::where('id_user', $id)->firstOrFail();
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $user = User::where('id_user', $decryptedId)->firstOrFail();
 
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -85,7 +98,13 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::where('id_user', $id)->firstOrFail();
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $user = User::where('id_user', $decryptedId)->firstOrFail();
         $user->delete();
 
         return redirect()->route('admin.users')
@@ -97,7 +116,13 @@ class UserController extends Controller
     // ===============================
     public function approve($id)
     {
-        $user = User::where('id_user', $id)->firstOrFail();
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $user = User::where('id_user', $decryptedId)->firstOrFail();
 
         if ($user->status !== 'pending') {
             return redirect()->route('admin.users')
@@ -112,7 +137,13 @@ class UserController extends Controller
 
     public function reject($id)
     {
-        $user = User::where('id_user', $id)->firstOrFail();
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $user = User::where('id_user', $decryptedId)->firstOrFail();
 
         if ($user->status !== 'pending') {
             return redirect()->route('admin.users')

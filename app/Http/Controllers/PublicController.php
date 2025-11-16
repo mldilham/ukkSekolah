@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\Produk;
 use App\Models\Toko;
 use App\Models\Kategori;
@@ -16,7 +17,12 @@ class PublicController extends Controller
 
         // Filter berdasarkan kategori
         if ($request->has('kategori') && $request->kategori != '') {
-            $query->where('id_kategori', $request->kategori);
+            try {
+                $decryptedKategoriId = Crypt::decrypt($request->kategori);
+                $query->where('id_kategori', $decryptedKategoriId);
+            } catch (\Exception $e) {
+                // Jika kategori tidak valid, abaikan filter
+            }
         }
 
         // Filter berdasarkan pencarian
@@ -32,7 +38,13 @@ class PublicController extends Controller
 
     public function showProduk($id)
     {
-        $produk = Produk::with(['kategori', 'toko.user', 'gambarProduks'])->findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $produk = Produk::with(['kategori', 'toko.user', 'gambarProduks'])->findOrFail($decryptedId);
 
         return view('public.produks.show', compact('produk'));
     }
@@ -46,7 +58,13 @@ class PublicController extends Controller
 
     public function showToko($id_toko)
     {
-        $toko = Toko::with(['user', 'produks.kategori', 'produks.gambarProduks'])->findOrFail($id_toko);
+        try {
+            $decryptedId = Crypt::decrypt($id_toko);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
+        $toko = Toko::with(['user', 'produks.kategori', 'produks.gambarProduks'])->findOrFail($decryptedId);
 
         return view('public.tokos.show', compact('toko'));
     }

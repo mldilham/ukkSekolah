@@ -133,13 +133,13 @@
                             <td>{{ $produk->stok }}</td>
                             <td>{{ $produk->tanggal_upload->format('d/m/Y') }}</td>
                             <td>
-                                <a href="{{ route('public.produks.show', $produk->id_produk) }}" target="_blank" class="btn btn-sm btn-info mb-1">
+                                <a href="{{ route('public.produks.show', Crypt::encrypt($produk->id_produk)) }}" target="_blank" class="btn btn-sm btn-info mb-1">
                                     <i class="fas fa-eye"></i> Lihat
                                 </a>
-                                <a href="{{ route('admin.produks.edit', $produk->id_produk) }}" class="btn btn-sm btn-warning mb-1">
+                                <a href="{{ route('admin.produks.edit', Crypt::encrypt($produk->id_produk)) }}" class="btn btn-sm btn-warning mb-1">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.produks.destroy', $produk->id_produk) }}" method="POST" class="d-inline">
+                                <form action="{{ route('admin.produks.destroy', Crypt::encrypt($produk->id_produk)) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">

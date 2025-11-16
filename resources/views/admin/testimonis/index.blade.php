@@ -49,6 +49,7 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Foto</th>
                             <th>Nama</th>
                             <th>Jabatan</th>
@@ -81,11 +82,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.testimonis.edit', $testimoni) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('admin.testimonis.edit', Crypt::encrypt($testimoni->id)) }}" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
                                     @if($testimoni->is_active)
-                                        <form action="{{ route('admin.testimonis.toggle-status', $testimoni) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.testimonis.toggle-status', Crypt::encrypt($testimoni->id)) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="btn btn-sm btn-secondary" title="Nonaktifkan Testimoni">
@@ -93,7 +94,7 @@
                                             </button>
                                         </form>
                                     @else
-                                        <form action="{{ route('admin.testimonis.toggle-status', $testimoni) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.testimonis.toggle-status', Crypt::encrypt($testimoni->id)) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="btn btn-sm btn-success" title="Aktifkan Testimoni">
@@ -101,7 +102,7 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <form action="{{ route('admin.testimonis.destroy', $testimoni) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus testimoni ini?')">
+                                    <form action="{{ route('admin.testimonis.destroy', Crypt::encrypt($testimoni->id)) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus testimoni ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">

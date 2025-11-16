@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\GambarProduk;
 use App\Models\Produk;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
 
 class GambarProdukController extends Controller
 {
@@ -47,14 +48,26 @@ class GambarProdukController extends Controller
 
     public function edit($id)
     {
-        $gambarProduk = GambarProduk::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $gambarProduk = GambarProduk::findOrFail($decryptedId);
         $produks = Produk::with(['toko.user', 'kategori'])->get();
         return view('admin.gambar_produks.edit', compact('gambarProduk', 'produks'));
     }
 
     public function update(Request $request, $id)
     {
-        $gambarProduk = GambarProduk::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $gambarProduk = GambarProduk::findOrFail($decryptedId);
 
         $request->validate([
             'id_produk' => 'required|exists:produks,id_produk',
@@ -83,7 +96,13 @@ class GambarProdukController extends Controller
 
     public function destroy($id)
     {
-        $gambarProduk = GambarProduk::findOrFail($id);
+        try {
+            $decryptedId = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404, 'ID tidak valid.');
+        }
+
+        $gambarProduk = GambarProduk::findOrFail($decryptedId);
 
         // Hapus file gambar
         Storage::disk('public')->delete('produks/' . $gambarProduk->nama_gambar);

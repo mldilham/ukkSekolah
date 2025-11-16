@@ -9,6 +9,7 @@ use App\Models\Kategori;
 use App\Models\GambarProduk;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
 
 class MemberController extends Controller
 {
@@ -107,6 +108,12 @@ class MemberController extends Controller
      */
     public function editProduk($id)
     {
+        try {
+            $id = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
         $user = Auth::user();
         $toko = $user->tokos()->first();
 
@@ -126,6 +133,12 @@ class MemberController extends Controller
      */
     public function updateProduk(Request $request, $id)
     {
+        try {
+            $id = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
         $user = Auth::user();
         $toko = $user->tokos()->first();
 
@@ -183,6 +196,12 @@ class MemberController extends Controller
      */
     public function destroyProduk($id)
     {
+        try {
+            $id = Crypt::decrypt($id);
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
         $user = Auth::user();
         $toko = $user->tokos()->first();
 

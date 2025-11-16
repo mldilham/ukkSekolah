@@ -79,23 +79,23 @@
                             </td>
                             <td>
                                 @if($user->status == 'pending')
-                                    <form action="{{ route('admin.users.approve', $user->id_user) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.users.approve', Crypt::encrypt($user->id_user)) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Setujui user ini?')">
                                             <i class="fas fa-check"></i> Setujui
                                         </button>
                                     </form>
-                                    <form action="{{ route('admin.users.reject', $user->id_user) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.users.reject', Crypt::encrypt($user->id_user)) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tolak user ini?')">
                                             <i class="fas fa-times"></i> Tolak
                                         </button>
                                     </form>
                                 @else
-                                    <a href="{{ route('admin.users.edit', $user->id_user) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('admin.users.edit', Crypt::encrypt($user->id_user)) }}" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <form action="{{ route('admin.users.destroy', $user->id_user) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.users.destroy', Crypt::encrypt($user->id_user)) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">

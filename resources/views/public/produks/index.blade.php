@@ -177,7 +177,7 @@
                                 <small class="text-muted">Stok: {{ $produk->stok }}</small>
                             </div>
 
-                            <a href="{{ route('public.produks.show', $produk->id_produk) }}"
+                            <a href="{{ route('public.produks.show', Crypt::encrypt($produk->id_produk)) }}"
                                class="btn product-btn w-100">Lihat Detail</a>
                         </div>
 
@@ -219,8 +219,8 @@
 
                     @foreach($kategoris as $kategori)
                         <a href="{{ route('public.produks.index',
-                            ['kategori' => $kategori->id_kategori] + request()->only('search')) }}"
-                           class="category-item {{ request('kategori') == $kategori->id_kategori ? 'active' : '' }}">
+                            ['kategori' => Crypt::encrypt($kategori->id_kategori)] + request()->only('search')) }}"
+                           class="category-item {{ request('kategori') == Crypt::encrypt($kategori->id_kategori) ? 'active' : '' }}">
                             {{ $kategori->nama_kategori }}
                         </a>
                     @endforeach
