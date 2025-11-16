@@ -64,6 +64,11 @@
                         <i class="fas fa-fw fa-images"></i>
                         <span>Gambar Produk</span></a>
                 </li>
+                <li class="nav-item {{ request()->routeIs('admin.testimonis*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('admin.testimonis.index') }}">
+                        <i class="fas fa-quote-left fa-2x "></i>
+                        <span>Testimoni</span></a>
+                </li>
             @else
                 <div class="sidebar-heading">
                     Manajemen Toko

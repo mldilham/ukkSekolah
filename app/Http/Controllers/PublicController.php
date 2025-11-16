@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Toko;
 use App\Models\Kategori;
+use App\Models\Testimoni;
 
 class PublicController extends Controller
 {
@@ -48,5 +49,12 @@ class PublicController extends Controller
         $toko = Toko::with(['user', 'produks.kategori', 'produks.gambarProduks'])->findOrFail($id_toko);
 
         return view('public.tokos.show', compact('toko'));
+    }
+
+    public function indexTestimoni()
+    {
+        $testimonis = Testimoni::where('is_active', true)->paginate(12);
+
+        return view('public.testimonis.index', compact('testimonis'));
     }
 }

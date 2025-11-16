@@ -29,6 +29,10 @@
                     <a class="nav-link premium-link" href="{{ route('public.tokos.index') }}">Toko</a>
                 </li>
 
+                <li class="nav-item {{ request()->is('testimonis*') ? 'active' : '' }}">
+                    <a class="nav-link premium-link" href="{{ route('public.testimonis.index') }}">Testimoni</a>
+                </li>
+
             </ul>
 
             <!-- Search Bar -->

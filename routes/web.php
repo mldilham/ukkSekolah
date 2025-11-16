@@ -11,6 +11,8 @@ use App\Http\Controllers\GambarProdukController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\TestimoniController;
+use App\Http\Controllers\PublicTestimoniController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -87,6 +89,19 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     Route::get('/gambar-produks/{id}/edit', [GambarProdukController::class, 'edit'])->name('gambar_produks.edit');
     Route::put('/gambar-produks/{id}', [GambarProdukController::class, 'update'])->name('gambar_produks.update');
     Route::delete('/gambar-produks/{id}', [GambarProdukController::class, 'destroy'])->name('gambar_produks.destroy');
+
+    // ===============================
+    // 💬 TESTIMONI MANAGEMENT
+    // ===============================
+    Route::resource('testimonis', TestimoniController::class)->names([
+        'index' => 'testimonis.index',
+        'create' => 'testimonis.create',
+        'store' => 'testimonis.store',
+        'edit' => 'testimonis.edit',
+        'update' => 'testimonis.update',
+        'destroy' => 'testimonis.destroy',
+    ]);
+    Route::patch('testimonis/{testimoni}/toggle-status', [TestimoniController::class, 'toggleStatus'])->name('testimonis.toggle-status');
 });
 
 // ===============================
@@ -126,3 +141,4 @@ Route::get('/tokos', [PublicController::class, 'indexToko'])->name('public.tokos
 Route::get('/tokos/{id_toko}', [PublicController::class, 'showToko'])->name('public.tokos.show');
 Route::get('/produks/home', [PublicController::class, 'indexProduk'])->name('public.produks.index');
 Route::get('/produks/{id}', [PublicController::class, 'showProduk'])->name('public.produks.show');
+Route::get('/testimonis', [PublicController::class, 'indexTestimoni'])->name('public.testimonis.index');

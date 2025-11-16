@@ -6,16 +6,18 @@ use Illuminate\Http\Request;
 use App\Models\Toko;
 use App\Models\Produk;
 use App\Models\Kategori;
+use App\Models\Testimoni;
 
 class HomeController extends Controller
 {
     public function index()
     {
         // Ambil data untuk halaman home
-        $tokos = Toko::with(['user', 'produks'])->take(6)->get(); // 6 toko terbaru
-        $produks = Produk::with(['kategori', 'toko.user', 'gambarProduks'])->take(8)->get(); // 8 produk terbaru
+        $tokos = Toko::with(['user', 'produks'])->get(); // Semua toko untuk pagination di view
+        $produks = Produk::with(['kategori', 'toko.user', 'gambarProduks'])->get(); // Semua produk untuk pagination di view
         $kategoris = Kategori::all();
+        $testimonis = Testimoni::where('is_active', true)->get(); // Testimoni aktif
 
-        return view('home', compact('tokos', 'produks', 'kategoris'));
+        return view('home', compact('tokos', 'produks', 'kategoris', 'testimonis'));
     }
 }

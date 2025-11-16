@@ -20,6 +20,7 @@
                     <li><a href="{{ url('/') }}">Beranda</a></li>
                     <li><a href="{{ route('public.produks.index') }}">Produk</a></li>
                     <li><a href="{{ route('public.tokos.index') }}">Toko</a></li>
+                    <li><a href="{{ route('public.testimonis.index') }}">Testimoni</a></li>
                     <li><a href="{{ route('login') }}">Login</a></li>
                 </ul>
             </div>
