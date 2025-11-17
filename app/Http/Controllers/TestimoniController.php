@@ -16,7 +16,7 @@ class TestimoniController extends Controller
      */
     public function index()
     {
-        $testimonis = Testimoni::all();
+        $testimonis = Testimoni::paginate(5);
         return view('admin.testimonis.index', compact('testimonis'));
     }
 

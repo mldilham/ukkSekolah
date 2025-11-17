@@ -89,7 +89,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered align-middle" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered align-middle" width="100%" cellspacing="0">
                     <thead class="table">
                         <tr>
                             <th>ID</th>
@@ -106,7 +106,7 @@
                     <tbody>
                         @foreach($produks as $produk)
                         <tr>
-                            <td>{{ $produk->id_produk }}</td>
+                            <td>{{ $loop->iteration + ($produks->currentPage() - 1) * $produks->perPage() }}</td>
                             <td>
                                 @if($produk->gambarProduks->isNotEmpty())
                                     <div class="d-flex flex-wrap gap-1">
@@ -155,7 +155,7 @@
 
             <!-- Pagination -->
             <div class="d-flex justify-content-center">
-                {{ $produks->appends(request()->query())->links() }}
+                {{ $produks->links('pagination::bootstrap-4') }}
             </div>
         </div>
     </div>

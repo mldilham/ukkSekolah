@@ -61,7 +61,7 @@
                     <tbody>
                         @forelse($testimonis as $testimoni)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $loop->iteration + ($testimonis->currentPage() - 1) * $testimonis->perPage() }}</td>
                                 <td>
                                     @if($testimoni->foto)
                                         <img src="{{ asset('storage/' . $testimoni->foto) }}" alt="{{ $testimoni->nama }}" class="rounded-circle" width="50" height="50">
@@ -118,6 +118,9 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-center">
+                {{ $testimonis->links('pagination::bootstrap-4') }}
             </div>
         </div>
     </div>

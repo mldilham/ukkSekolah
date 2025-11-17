@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white premium-navbar shadow-sm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-white premium-navbar shadow-sm fixed-top">
     <div class="container">
 
         <!-- Logo -->

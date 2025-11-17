@@ -50,8 +50,8 @@
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-5">
-            {{ $testimonis->links() }}
+        <div class="d-flex justify-content-center mt-4">
+            {{ $testimonis->links('pagination::bootstrap-4') }}
         </div>
 
     @else

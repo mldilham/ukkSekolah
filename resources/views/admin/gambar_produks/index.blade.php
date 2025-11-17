@@ -44,7 +44,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered"  width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -56,7 +56,7 @@
                     <tbody>
                         @foreach($gambarProduks as $gambarProduk)
                         <tr>
-                            <td>{{ $gambarProduk->id_gambar }}</td>
+                            <td>{{ $loop->iteration + ($gambarProduks->currentPage() - 1) * $gambarProduks->perPage() }}</td>
                             <td>{{ $gambarProduk->produk->nama_produk ?? 'N/A' }}</td>
                             <td>{{ $gambarProduk->nama_gambar }}</td>
                             <td>
@@ -75,6 +75,9 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                {{ $gambarProduks->links('pagination::bootstrap-4') }}
             </div>
         </div>
     </div>

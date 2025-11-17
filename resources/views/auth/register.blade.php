@@ -226,6 +226,12 @@
     </style>
 </head>
 <body>
+    <div class="position-absolute top-0 start-0 p-3">
+        <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
     <div class="register-container">
         <div class="card">
             <div class="card-header">

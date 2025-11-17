@@ -44,7 +44,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -55,7 +55,7 @@
                     <tbody>
                         @foreach($kategoris as $kategori)
                         <tr>
-                            <td>{{ $kategori->id_kategori }}</td>
+                            <td>{{ $loop->iteration + ($kategoris->currentPage() - 1) * $kategoris->perPage() }}</td>
                             <td>{{ $kategori->nama_kategori }}</td>
                             <td>
                                 <a href="{{ route('admin.kategoris.edit', Crypt::encrypt($kategori->id_kategori)) }}" class="btn btn-sm btn-warning">
@@ -73,6 +73,9 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                {{ $kategoris->links('pagination::bootstrap-4') }}
             </div>
         </div>
     </div>

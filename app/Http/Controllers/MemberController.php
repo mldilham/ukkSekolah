@@ -34,7 +34,7 @@ class MemberController extends Controller
                 ->with('error', 'Anda belum memiliki toko. Buat toko terlebih dahulu.');
         }
 
-        $produks = $toko->produks()->with(['kategori', 'gambarProduks'])->paginate(10);
+        $produks = $toko->produks()->with(['kategori', 'gambarProduks'])->paginate(5);
 
         return view('member.produks.index', compact('produks', 'toko'));
     }

@@ -260,6 +260,12 @@
     </style>
 </head>
 <body>
+    <div class="position-absolute top-0 start-0 p-3">
+        <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
     <div class="login-card">
         <div class="card-header">
             <div class="logo-icon">
@@ -270,6 +276,7 @@
         </div>
 
         <div class="card-body">
+
             @if($errors->any())
                 <script>
                     Swal.fire({

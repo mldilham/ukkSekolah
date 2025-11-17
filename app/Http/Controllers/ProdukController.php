@@ -34,7 +34,7 @@ class ProdukController extends Controller
             $query->where('id_toko', $request->toko);
         }
 
-        $produks = $query->paginate(10)->appends($request->query());
+        $produks = $query->paginate(5);
         $kategoris = Kategori::all();
         $tokos = Toko::with('user')->get();
         return view('admin.produks.index', compact('produks', 'kategoris', 'tokos'));

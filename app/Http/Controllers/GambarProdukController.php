@@ -15,7 +15,7 @@ class GambarProdukController extends Controller
     // ===============================
     public function index()
     {
-        $gambarProduks = GambarProduk::with(['produk.toko.user', 'produk.kategori'])->paginate(10);
+        $gambarProduks = GambarProduk::with(['produk.toko.user', 'produk.kategori'])->paginate(5);
         return view('admin.gambar_produks.index', compact('gambarProduks'));
     }
 

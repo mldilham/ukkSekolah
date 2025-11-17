@@ -454,7 +454,7 @@ body {
         <div class="store-stats">
             <div class="stat-item">
                 <i class="fas fa-box"></i>
-                <span>{{ $toko->produks->count() }} Produk</span>
+                <span>{{ $totalProduks }} Produk</span>
             </div>
             <div class="stat-item">
                 <i class="fas fa-calendar"></i>
@@ -471,13 +471,13 @@ body {
     <div class="products-section">
         <div class="section-header">
             <h3 class="section-title">Produk Toko</h3>
-            <span class="product-count">{{ $toko->produks->count() }} Produk</span>
+            <span class="product-count">{{ $totalProduks }} Produk</span>
         </div>
 
         <div class="p-3">
-            @if($toko->produks->count())
+            @if($produks->count())
                 <div class="row justify-content-center">
-                    @foreach($toko->produks as $produk)
+                    @foreach($produks as $produk)
                         <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                             <div class="product-card">
                                 <div class="product-img-container">
@@ -524,6 +524,7 @@ body {
                         </div>
                     @endforeach
                 </div>
+
             @else
                 <div class="empty-state">
                     <div class="empty-icon">
@@ -534,8 +535,10 @@ body {
                 </div>
             @endif
         </div>
+        <div class="d-flex justify-content-center mt-4">
+            {{ $produks->links('pagination::bootstrap-4') }}
+        </div>
     </div>
-
 </div>
 
 @endsection

@@ -30,7 +30,7 @@ class PublicController extends Controller
             $query->where('nama_produk', 'like', '%' . $request->search . '%');
         }
 
-        $produks = $query->paginate(12);
+        $produks = $query->paginate(9);
         $kategoris = Kategori::all();
 
         return view('public.produks.index', compact('produks', 'kategoris'));
@@ -51,7 +51,7 @@ class PublicController extends Controller
 
     public function indexToko()
     {
-        $tokos = Toko::with(['user', 'produks'])->paginate(12);
+        $tokos = Toko::with(['user', 'produks'])->paginate(6);
 
         return view('public.tokos.index', compact('tokos'));
     }
@@ -64,14 +64,16 @@ class PublicController extends Controller
             abort(404);
         }
 
-        $toko = Toko::with(['user', 'produks.kategori', 'produks.gambarProduks'])->findOrFail($decryptedId);
+        $toko = Toko::with(['user'])->findOrFail($decryptedId);
+        $produks = Produk::where('id_toko', $decryptedId)->with(['kategori', 'gambarProduks'])->paginate(4);
+        $totalProduks = $toko->produks()->count();
 
-        return view('public.tokos.show', compact('toko'));
+        return view('public.tokos.show', compact('toko', 'produks', 'totalProduks'));
     }
 
     public function indexTestimoni()
     {
-        $testimonis = Testimoni::where('is_active', true)->paginate(12);
+        $testimonis = Testimoni::where('is_active', true)->paginate(9);
 
         return view('public.testimonis.index', compact('testimonis'));
     }

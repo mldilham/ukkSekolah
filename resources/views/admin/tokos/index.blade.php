@@ -44,7 +44,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -59,7 +59,7 @@
                     <tbody>
                         @foreach($tokos as $toko)
                         <tr>
-                            <td>{{ $toko->id_toko }}</td>
+                            <td>{{ $loop->iteration + ($tokos->currentPage() - 1) * $tokos->perPage() }}</td>
                             <td>
                                 @if(!empty($toko->gambar) && file_exists(public_path('storage/tokos/' . $toko->gambar)))
                                     <img src="{{ asset('storage/tokos/' . $toko->gambar) }}"
@@ -94,6 +94,9 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                {{ $tokos->links('pagination::bootstrap-4') }}
             </div>
         </div>
     </div>

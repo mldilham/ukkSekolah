@@ -14,7 +14,7 @@ class KategoriController extends Controller
     // ===============================
     public function index()
     {
-        $kategoris = Kategori::paginate(10);
+        $kategoris = Kategori::paginate(5);
         return view('admin.kategoris.index', compact('kategoris'));
     }
 

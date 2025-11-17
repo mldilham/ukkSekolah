@@ -195,11 +195,9 @@
 
             </div>
 
-            @if($produks->hasPages())
-                <div class="d-flex justify-content-center mt-3">
-                    {{ $produks->appends(request()->query())->links() }}
-                </div>
-            @endif
+            <div class="d-flex justify-content-center mt-4">
+                {{ $produks->links('pagination::bootstrap-4') }}
+            </div>
 
         </div>
 

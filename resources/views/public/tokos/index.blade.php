@@ -128,7 +128,7 @@
     <h1 class="mb-4 fw-bold" style="font-size: 1.8rem;">Semua Toko</h1>
 
     <div class="row gy-3">
-        @forelse($tokos as $toko)
+        @forelse($tokos->take(3) as $toko)
         <div class="col-12">
 
             <div class="store-card">
@@ -182,11 +182,9 @@
     </div>
 
     {{-- Pagination --}}
-    @if($tokos->hasPages())
     <div class="d-flex justify-content-center mt-4">
-        {{ $tokos->appends(request()->query())->links() }}
+        {{ $tokos->links('pagination::bootstrap-4') }}
     </div>
-    @endif
 
 </div>
 
