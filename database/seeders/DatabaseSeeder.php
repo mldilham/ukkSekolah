@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         // Create Member Users
         $member1 = User::create([
-            'nama' => 'Member MarSchool',
+            'nama' => 'Member 1',
             'kontak' => '081234567890',
             'username' => 'Member',
             'password' => Hash::make('member123'),
@@ -57,210 +57,173 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create Categories
-        $elektronik = Kategori::create([
-            'nama_kategori' => 'Elektronik',
+        $minuman = Kategori::create([
+            'nama_kategori' => 'Minuman',
         ]);
 
-        $fashion = Kategori::create([
-            'nama_kategori' => 'Fashion',
+        $alatsekolah = Kategori::create([
+            'nama_kategori' => 'Peralatan Sekolah',
         ]);
 
         $makanan = Kategori::create([
-            'nama_kategori' => 'Makanan & Minuman',
+            'nama_kategori' => 'Makanan',
         ]);
 
-        $olahraga = Kategori::create([
-            'nama_kategori' => 'Olahraga',
-        ]);
-
-        $kesehatan = Kategori::create([
-            'nama_kategori' => 'Kesehatan & Kecantikan',
-        ]);
 
         // Create Stores
         $toko1 = Toko::create([
-            'nama_toko' => 'Toko Elektronik Ahmad',
-            'deskripsi' => 'Menjual berbagai macam elektronik berkualitas dengan harga terjangkau',
+            'nama_toko' => 'Toko Minuman Ahmad',
+            'deskripsi' => 'Dengan pelayanan cepat dan ramah, serta pilihan menu yang beragam, toko kami menjadi tempat ideal untuk mencari minuman yang menyegarkan di segala suasana. Baik untuk melepas dahaga, menemani kerja, atau sekadar menikmati waktu santai, kami siap menyajikan minuman terbaik untuk Anda.',
             'gambar' => 'toko1.jpg',
             'id_user' => $member1->id_user,
             'kontak_toko' => '081234567890',
-            'alamat' => 'Jl. Sudirman No. 123, Jakarta Pusat',
+            'alamat' => 'Jl. Raya Garut',
         ]);
 
         $toko2 = Toko::create([
-            'nama_toko' => 'Fashion Siti Collection',
-            'deskripsi' => 'Koleksi fashion terbaru untuk pria dan wanita dengan model kekinian',
+            'nama_toko' => 'Siti Collection',
+            'deskripsi' => 'Dengan pelayanan ramah dan pilihan produk yang selalu up-to-date, toko kami hadir untuk membantu siswa, guru, dan orang tua mendapatkan kebutuhan belajar dengan mudah dan nyaman. Baik untuk persiapan masuk sekolah, perlengkapan harian, maupun kebutuhan tugas khusus, semuanya tersedia dalam satu tempat.',
             'gambar' => 'toko2.jpg',
             'id_user' => $member2->id_user,
             'kontak_toko' => '081234567891',
-            'alamat' => 'Jl. Malioboro No. 45, Yogyakarta',
+            'alamat' => 'Jl. Raya Garut',
         ]);
 
         $toko3 = Toko::create([
-            'nama_toko' => 'Budi Sport Center',
-            'deskripsi' => 'Pusat perlengkapan olahraga lengkap untuk semua kebutuhan Anda',
+            'nama_toko' => 'Toko Makanan Budi',
+            'deskripsi' => 'Dengan cita rasa yang otentik, pelayanan ramah, serta harga yang bersahabat, toko kami menjadi pilihan tepat untuk menikmati makanan enak setiap hari. Baik untuk makan di tempat, dibawa pulang, maupun dipesan secara online, kami selalu siap menyajikan hidangan terbaik untuk Anda.',
             'gambar' => 'toko3.jpg',
             'id_user' => $member3->id_user,
             'kontak_toko' => '081234567892',
-            'alamat' => 'Jl. Veteran No. 67, Surabaya',
+            'alamat' => 'Jl. Raya Garut',
         ]);
 
         // Create Products
         $produk1 = Produk::create([
-            'id_kategori' => $elektronik->id_kategori,
-            'nama_produk' => 'Smartphone Samsung Galaxy A54',
-            'harga' => 4500000,
-            'stok' => 15,
-            'deskripsi' => 'Smartphone Samsung Galaxy A54 dengan RAM 8GB, storage 128GB, kamera 50MP, dan baterai 5000mAh. Garansi resmi 1 tahun.',
+            'id_kategori' => $minuman->id_kategori,
+            'nama_produk' => 'Es Jeruk Nipis',
+            'harga' => 5000,
+            'stok' => 100,
+            'deskripsi' => 'Es jeruk nipis adalah minuman segar yang dibuat dari perasan jeruk nipis asli, dicampur dengan air dingin dan sedikit gula untuk menyeimbangkan rasa. Perpaduan rasa asam yang khas, manis yang ringan, serta sensasi dingin menjadikan es jeruk nipis pilihan sempurna untuk melepas dahaga. Minuman ini tidak hanya menyegarkan, tetapi juga kaya vitamin C dan dipercaya membantu meningkatkan daya tahan tubuh. Cocok dinikmati saat cuaca panas atau sebagai pendamping makanan apa pun.',
             'tanggal_upload' => now(),
             'id_toko' => $toko1->id_toko,
         ]);
 
         $produk2 = Produk::create([
-            'id_kategori' => $elektronik->id_kategori,
-            'nama_produk' => 'Laptop ASUS VivoBook 14',
-            'harga' => 8500000,
+            'id_kategori' => $minuman->id_kategori,
+            'nama_produk' => 'Es Kopi',
+            'harga' => 6500,
             'stok' => 8,
-            'deskripsi' => 'Laptop ASUS VivoBook 14 dengan processor Intel Core i5, RAM 8GB, SSD 512GB, layar 14 inch FHD.',
+            'deskripsi' => 'Es kopi adalah minuman dingin yang dibuat dari campuran kopi hitam berkualitas yang disajikan dengan es batu untuk memberikan sensasi segar. Aromanya yang khas, rasa pahit yang lembut, serta sentuhan manis sesuai selera menjadikan es kopi pilihan favorit untuk menemani aktivitas sehari-hari. Minuman ini memberikan energi sekaligus kesegaran, cocok dinikmati saat cuaca panas atau saat membutuhkan penyegar pikiran.',
             'tanggal_upload' => now(),
             'id_toko' => $toko1->id_toko,
         ]);
 
         $produk3 = Produk::create([
-            'id_kategori' => $fashion->id_kategori,
-            'nama_produk' => 'Dress Casual Wanita',
-            'harga' => 150000,
-            'stok' => 25,
-            'deskripsi' => 'Dress casual wanita dengan bahan katun premium, motif floral, ukuran S/M/L/XL. Cocok untuk acara santai.',
+            'id_kategori' => $alatsekolah->id_kategori,
+            'nama_produk' => 'Buku',
+            'harga' => 3000,
+            'stok' => 100,
+            'deskripsi' => 'Buku ini hadir dengan kondisi bersih, rapi, dan terawat, cocok untuk Anda yang ingin menambah wawasan atau sekadar mencari bacaan berkualitas. Dengan isi materi yang lengkap dan mudah dipahami, buku ini sangat direkomendasikan untuk pelajar, mahasiswa, maupun pembaca umum. Dibuat dengan kualitas cetak yang baik, halaman yang utuh, serta sampul menarik, buku ini memberikan pengalaman membaca yang nyaman. Cocok sebagai koleksi pribadi atau hadiah untuk teman dan keluarga.',
             'tanggal_upload' => now(),
             'id_toko' => $toko2->id_toko,
         ]);
 
         $produk4 = Produk::create([
-            'id_kategori' => $fashion->id_kategori,
-            'nama_produk' => 'Sepatu Sneakers Pria',
-            'harga' => 350000,
-            'stok' => 12,
-            'deskripsi' => 'Sepatu sneakers pria dengan desain modern, bahan sintetis berkualitas, sol karet anti slip. Ukuran 39-44.',
+            'id_kategori' => $alatsekolah->id_kategori,
+            'nama_produk' => 'Puplen HiTech',
+            'harga' => 7000,
+            'stok' => 100,
+            'deskripsi' => 'Pulpen Hi-Tech adalah pulpen gel dengan ujung tinta super halus yang dirancang untuk menghasilkan tulisan yang rapi, presisi, dan nyaman digunakan dalam waktu lama. Dengan ujung 0.3–0.5 mm, pulpen ini mampu menulis dengan detail tinggi tanpa bleber atau macet. Tinta gelnya cepat kering, tidak mudah luntur, dan konsisten dari awal hingga akhir pemakaian. Cocok untuk pelajar, mahasiswa, pekerja kantor, hingga kebutuhan menggambar teknik atau membuat catatan yang rapi.',
             'tanggal_upload' => now(),
             'id_toko' => $toko2->id_toko,
         ]);
 
         $produk5 = Produk::create([
             'id_kategori' => $makanan->id_kategori,
-            'nama_produk' => 'Kopi Arabica Premium 500g',
-            'harga' => 75000,
-            'stok' => 30,
-            'deskripsi' => 'Kopi arabica premium grade A, dipetik dari perkebunan di dataran tinggi. Aroma kuat, rasa balance.',
+            'nama_produk' => 'Citul',
+            'harga' => 2500,
+            'stok' => 100,
+            'deskripsi' => 'Aci Tulang adalah camilan khas berbahan dasar adonan aci yang dibentuk menyerupai tulang dan digoreng hingga renyah di luar namun tetap kenyal di dalam. Dipadukan dengan bumbu pedas, gurih, atau asin, aci tulang menawarkan cita rasa yang nagih dan cocok dinikmati kapan saja. Teksturnya yang unik—crispy saat digigit dan kenyal di dalam—membuat aci tulang jadi favorit banyak orang, terutama pecinta makanan pedas. Cocok untuk teman nonton, nongkrong, atau camilan sehari-hari.',
             'tanggal_upload' => now(),
             'id_toko' => $toko3->id_toko,
-        ]);
-
-        $produk6 = Produk::create([
-            'id_kategori' => $olahraga->id_kategori,
-            'nama_produk' => 'Dumbbell Set 20kg',
-            'harga' => 250000,
-            'stok' => 5,
-            'deskripsi' => 'Set dumbbell 20kg terdiri dari 2 buah dumbbell 10kg masing-masing. Bahan besi cor berkualitas tinggi.',
-            'tanggal_upload' => now(),
-            'id_toko' => $toko3->id_toko,
-        ]);
-
-        $produk7 = Produk::create([
-            'id_kategori' => $kesehatan->id_kategori,
-            'nama_produk' => 'Vitamin C 1000mg',
-            'harga' => 85000,
-            'stok' => 50,
-            'deskripsi' => 'Suplemen vitamin C 1000mg per kapsul, 60 kapsul per botol. Meningkatkan daya tahan tubuh.',
-            'tanggal_upload' => now(),
-            'id_toko' => $toko1->id_toko,
         ]);
 
         $produk8 = Produk::create([
-            'id_kategori' => $elektronik->id_kategori,
-            'nama_produk' => 'Headphone Wireless Sony',
-            'harga' => 450000,
-            'stok' => 20,
-            'deskripsi' => 'Headphone wireless Sony dengan noise cancelling, baterai 30 jam, foldable design.',
+            'id_kategori' => $minuman->id_kategori,
+            'nama_produk' => 'Es kelapa',
+            'harga' => 10000,
+            'stok' => 100,
+            'deskripsi' => 'Es kelapa adalah minuman segar yang dibuat dari air kelapa muda asli dengan tambahan daging kelapa yang lembut. Disajikan dengan es batu, minuman ini memberikan rasa manis alami dan kesegaran yang menenangkan. Kaya akan elektrolit dan mineral, es kelapa sangat cocok untuk menghilangkan dahaga, terutama saat cuaca panas. Rasanya yang alami dan menyehatkan membuatnya menjadi pilihan favorit banyak orang.',
             'tanggal_upload' => now(),
             'id_toko' => $toko1->id_toko,
         ]);
 
         $produk9 = Produk::create([
-            'id_kategori' => $fashion->id_kategori,
-            'nama_produk' => 'Kemeja Formal Pria',
-            'harga' => 200000,
-            'stok' => 18,
-            'deskripsi' => 'Kemeja formal pria bahan katun, model slim fit, warna putih/navy. Ukuran M/L/XL.',
+            'id_kategori' => $alatsekolah->id_kategori,
+            'nama_produk' => 'Pensil',
+            'harga' => 4000,
+            'stok' => 100,
+            'deskripsi' => 'Pensil ini dirancang dengan kualitas unggul untuk menghasilkan tulisan yang jelas, halus, dan nyaman digunakan. Terbuat dari bahan kayu yang kuat serta isi grafit yang tidak mudah patah, pensil ini cocok untuk keperluan menulis, menggambar, maupun membuat sketsa. Dilengkapi dengan bentuk ergonomis yang mudah digenggam, pensil ini ideal digunakan oleh pelajar, mahasiswa, hingga profesional. Tersedia dalam tingkat kekerasan yang stabil sehingga hasil coretan tetap konsisten.',
             'tanggal_upload' => now(),
             'id_toko' => $toko2->id_toko,
         ]);
 
-        $produk10 = Produk::create([
-            'id_kategori' => $olahraga->id_kategori,
-            'nama_produk' => 'Bola Basket Spalding',
-            'harga' => 180000,
-            'stok' => 10,
-            'deskripsi' => 'Bola basket Spalding ukuran 7, bahan komposit berkualitas tinggi, cocok untuk indoor/outdoor.',
-            'tanggal_upload' => now(),
-            'id_toko' => $toko3->id_toko,
-        ]);
-
         // Create Product Images (sample data - in real app, images would be uploaded)
-        GambarProduk::create([
-            'id_produk' => $produk1->id_produk,
-            'nama_gambar' => 'samsung-a54-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk1->id_produk,
+        //     'nama_gambar' => 'samsung-a54-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk1->id_produk,
-            'nama_gambar' => 'samsung-a54-2.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk1->id_produk,
+        //     'nama_gambar' => 'samsung-a54-2.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk2->id_produk,
-            'nama_gambar' => 'asus-vivobook-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk2->id_produk,
+        //     'nama_gambar' => 'asus-vivobook-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk3->id_produk,
-            'nama_gambar' => 'dress-casual-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk3->id_produk,
+        //     'nama_gambar' => 'dress-casual-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk4->id_produk,
-            'nama_gambar' => 'sneakers-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk4->id_produk,
+        //     'nama_gambar' => 'sneakers-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk5->id_produk,
-            'nama_gambar' => 'kopi-arabica-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk5->id_produk,
+        //     'nama_gambar' => 'kopi-arabica-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk6->id_produk,
-            'nama_gambar' => 'dumbbell-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk6->id_produk,
+        //     'nama_gambar' => 'dumbbell-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk7->id_produk,
-            'nama_gambar' => 'vitamin-c-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk7->id_produk,
+        //     'nama_gambar' => 'vitamin-c-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk8->id_produk,
-            'nama_gambar' => 'sony-headphone-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk8->id_produk,
+        //     'nama_gambar' => 'sony-headphone-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk9->id_produk,
-            'nama_gambar' => 'kemeja-formal-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk9->id_produk,
+        //     'nama_gambar' => 'kemeja-formal-1.jpg',
+        // ]);
 
-        GambarProduk::create([
-            'id_produk' => $produk10->id_produk,
-            'nama_gambar' => 'bola-basket-1.jpg',
-        ]);
+        // GambarProduk::create([
+        //     'id_produk' => $produk10->id_produk,
+        //     'nama_gambar' => 'bola-basket-1.jpg',
+        // ]);
 
     }
 }

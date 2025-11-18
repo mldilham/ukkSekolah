@@ -103,7 +103,7 @@ class TokoController extends Controller
 
         // Cegah user lain punya toko lebih dari satu
         $existingToko = Toko::where('id_user', $request->id_user)
-                            ->where('id_toko', '!=', $id)
+                            ->where('id_toko', '!=', $decryptedId)
                             ->first();
         if ($existingToko) {
             return back()->withInput()->with('error', 'User ini sudah memiliki toko lain.');

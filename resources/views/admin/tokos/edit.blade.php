@@ -15,7 +15,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Edit Toko</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.tokos.update', $toko->id_toko) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.tokos.update', Crypt::encrypt($toko->id_toko)) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -76,6 +76,9 @@
                         <div class="form-group">
                             <label for="kontak_toko">Kontak Toko</label>
                             <input type="text" class="form-control @error('kontak_toko') is-invalid @enderror" id="kontak_toko" name="kontak_toko" value="{{ old('kontak_toko', $toko->kontak_toko) }}" required>
+                            <small class="form-text text-muted">
+                                Catatan : Masukan kontak berawalan +62
+                            </small>
                             @error('kontak_toko')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

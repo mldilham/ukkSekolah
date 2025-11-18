@@ -72,8 +72,8 @@
                                 </a>
                             @endif
 
-                            <div class="dropdown-divider"></div>
-
+                            {{-- <div class="dropdown-divider"></div> --}}
+{{--
                             <a class="dropdown-item text-danger" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="fas fa-sign-out-alt mr-2 text-muted"></i> Logout
@@ -81,7 +81,7 @@
 
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
-                            </form>
+                            </form> --}}
 
                         </div>
                     </li>

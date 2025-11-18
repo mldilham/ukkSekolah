@@ -126,14 +126,14 @@
                             @enderror
                         </div>
 
-                        <!-- Preview Gambar Baru -->
+                        {{-- <!-- Preview Gambar Baru -->
                         <div class="form-group">
                             <label>Preview Gambar Baru</label>
                             <div id="image-preview" class="border rounded p-3 text-center" style="min-height: 150px;">
                                 <i class="fas fa-image fa-2x text-muted mb-2"></i>
                                 <p class="text-muted">Pilih gambar baru untuk melihat preview</p>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 

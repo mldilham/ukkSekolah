@@ -124,8 +124,8 @@
 </style>
 
 
-<div class="container py-4">
-    <h1 class="mb-4 fw-bold" style="font-size: 1.8rem;">Semua Toko</h1>
+<div class="container py-4 pt-5">
+    <h1 class="mb-4 fw-bold pt-5" style="font-size: 1.8rem;">Semua Toko</h1>
 
     <div class="row gy-3">
         @forelse($tokos->take(3) as $toko)

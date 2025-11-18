@@ -32,6 +32,9 @@
                             <label for="kontak">Kontak</label>
                             <input type="text" class="form-control @error('kontak') is-invalid @enderror"
                                    id="kontak" name="kontak" value="{{ old('kontak', $user->kontak) }}">
+                            <small class="form-text text-muted">
+                                Catatan : Masukan kontak berawalan +62
+                            </small>
                             @error('kontak')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -42,15 +45,6 @@
                             <input type="text" class="form-control @error('username') is-invalid @enderror"
                                    id="username" name="username" value="{{ old('username', $user->username) }}" required>
                             @error('username')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                   id="email" name="email" value="{{ old('email', $user->email) }}" required>
-                            @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

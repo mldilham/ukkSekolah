@@ -66,6 +66,9 @@
                     <div class="form-group mb-3">
                         <label for="kontak_toko">Kontak Toko</label>
                         <input type="text" class="form-control @error('kontak_toko') is-invalid @enderror" id="kontak_toko" name="kontak_toko" value="{{ old('kontak_toko') }}" required>
+                        <small class="form-text text-muted">
+                            Catatan : Masukan kontak berawalan +62
+                        </small>
                         @error('kontak_toko')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
