@@ -5,13 +5,33 @@
 {{-- ============================= --}}
 {{--         HERO CAROUSEL         --}}
 {{-- ============================= --}}
-@if($produks->count() > 0)
+@php
+// Data dummy carousel
+$carouselItems = [
+    [
+        'judul' => 'Promo Spesial 1',
+        'deskripsi' => 'Nikmati diskon menarik hari ini!',
+        'gambar' => asset('template/img/iklan1.jpg')
+    ],
+    [
+        'judul' => 'Promo Spesial 2',
+        'deskripsi' => 'Produk terbaru siap untuk kamu!',
+        'gambar' => asset('template/img/iklan2.jpg')
+    ],
+    [
+        'judul' => 'Promo Spesial 3',
+        'deskripsi' => 'Belanja hemat dan nyaman di sini!',
+        'gambar' => asset('template/img/iklan3.jpg')
+    ]
+];
+@endphp
+
 <div class="d-flex justify-content-center mt-5 p-5">
     <div class="carousel-container">
         <div id="heroCarousel" class="carousel slide" data-ride="carousel">
 
             <ol class="carousel-indicators">
-                @foreach($produks->take(3) as $index => $produk)
+                @foreach($carouselItems as $index => $item)
                     <li data-target="#heroCarousel"
                         data-slide-to="{{ $index }}"
                         class="{{ $index == 0 ? 'active' : '' }}">
@@ -20,17 +40,15 @@
             </ol>
 
             <div class="carousel-inner rounded-xl shadow-sm">
-                @foreach($produks->take(3) as $index => $produk)
+                @foreach($carouselItems as $index => $item)
                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                        @if($produk->gambarProduks->isNotEmpty())
-                            <img class="d-block w-100 hero-img"
-                                 src="{{ asset('storage/produks/' . $produk->gambarProduks->first()->nama_gambar) }}"
-                                 alt="{{ $produk->nama }}">
-                        @else
-                            <img class="d-block w-100 hero-img"
-                                 src="{{ asset('template/img/undraw_posting_photo.svg') }}"
-                                 alt="Default">
-                        @endif
+                        <img class="d-block w-100 hero-img"
+                             src="{{ $item['gambar'] }}"
+                             alt="{{ $item['judul'] }}">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>{{ $item['judul'] }}</h5>
+                            <p>{{ $item['deskripsi'] }}</p>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -46,21 +64,6 @@
         </div>
     </div>
 </div>
-@else
-<div class="d-flex justify-content-center mt-4">
-    <div class="empty-state-card">
-        <div class="empty-state-content">
-            <i class="fas fa-shopping-bag fa-4x text-muted mb-4"></i>
-            <h3 class="empty-state-title">Belum Ada Produk</h3>
-            <p class="empty-state-text">Produk-produk menarik akan segera hadir di marketplace ini.</p>
-            <a href="{{ route('public.produks.index') }}" class="btn btn-market">
-                <i class="fas fa-search"></i> Jelajahi Produk
-            </a>
-        </div>
-    </div>
-</div>
-@endif
-
 
 {{-- ======================================= --}}
 {{--                  STYLE                  --}}
@@ -171,7 +174,6 @@
     }
 </style>
 
-
 {{-- ============================= --}}
 {{--       KATEGORI PRODUK         --}}
 {{-- ============================= --}}
@@ -212,16 +214,13 @@
 </div>
 @endif
 
-
 {{-- ============================= --}}
 {{--        PRODUK TERBARU         --}}
 {{-- ============================= --}}
 @if($produks->count() > 0)
 <div class="py-5" style="background: var(--primary-soft)">
     <div class="container">
-
         <h4 class="section-title">Rekomendasi Untuk Anda</h4>
-
         <div class="row justify-content-center">
             @foreach($produks->take(8) as $produk)
             <div class="col-md-3 col-sm-6 mb-4">
@@ -240,23 +239,19 @@
 
                     <div class="card-body d-flex flex-column" style="height: 180px;">
                         <div class="flex-grow-1">
-
                             <p class="mb-1 product-title"
                                style="font-size: 15px; font-weight: 600; min-height: 40px;
                                       display: -webkit-box; -webkit-line-clamp: 2;
                                       -webkit-box-orient: vertical; overflow: hidden;">
                                 {{ $produk->nama_produk }}
                             </p>
-
                             <p class="mb-1 product-price"
                                style="font-size: 16px; font-weight: 700; color: var(--primary);">
                                 Rp {{ number_format($produk->harga, 0, ',', '.') }}
                             </p>
-
                             <p class="text-muted small product-store" style="min-height: 20px;">
                                 {{ Str::limit($produk->toko->nama_toko ?? 'Toko', 25) }}
                             </p>
-
                         </div>
 
                         <a href="{{ route('public.produks.show', Crypt::encrypt($produk->id_produk)) }}"
@@ -297,22 +292,16 @@
 </div>
 @endif
 
-
 {{-- ============================= --}}
 {{--         TOKO TERPERCAYA       --}}
 {{-- ============================= --}}
 @if($tokos->count() > 0)
 <div class="container my-5">
-
     <h4 class="section-title">Toko Terpercaya</h4>
-
     <div class="row justify-content-center">
         @foreach($tokos->take(3) as $toko)
         <div class="col-md-4 mb-4 d-flex align-items-stretch">
-
             <div class="card product-card p-4 w-100">
-
-                {{-- Gambar toko --}}
                 @if($toko->gambar)
                     <img src="{{ asset('storage/tokos/' . $toko->gambar) }}"
                          class="card-img-top mb-3 rounded-circle mx-auto d-block"
@@ -324,16 +313,12 @@
                          style="width: 80px; height: 80px; object-fit: cover;"
                          alt="Default Store">
                 @endif
-
                 <h5 class="fw-bold">{{ $toko->nama_toko }}</h5>
-
                 <a href="{{ route('public.tokos.show', Crypt::encrypt($toko->id_toko)) }}"
                    class="btn btn-market mt-2 px-3">
                     Kunjungi Toko
                 </a>
-
             </div>
-
         </div>
         @endforeach
     </div>
@@ -345,7 +330,6 @@
         </a>
     </div>
     @endif
-
 </div>
 @else
 <div class="container my-5">
@@ -362,7 +346,6 @@
 </div>
 @endif
 
-
 {{-- ============================= --}}
 {{--       TESTIMONI PELANGGAN     --}}
 {{-- ============================= --}}
@@ -370,24 +353,17 @@
 <div class="py-5"
      style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white; width: 100vw; margin-left: calc(-50vw + 50%);">
-
     <div class="container">
-
         <h4 class="section-title text-white">Apa Kata Pelanggan Kami</h4>
-
         <div class="row justify-content-center">
             @foreach($testimonis->take(6) as $testimoni)
             <div class="col-md-4 mb-4">
-
                 <div class="card testimonial-card"
                      style="background: rgba(255,255,255,0.1);
                             backdrop-filter: blur(10px);
                             border: 1px solid rgba(255,255,255,0.2);
                             border-radius: 15px; color: white;">
-
                     <div class="card-body text-center p-4">
-
-                        {{-- Foto Testimoni --}}
                         @if($testimoni->foto)
                             <img src="{{ asset('storage/' . $testimoni->foto) }}"
                                  class="rounded-circle mb-3"
@@ -416,9 +392,7 @@
                         @endif
 
                     </div>
-
                 </div>
-
             </div>
             @endforeach
         </div>
@@ -431,9 +405,7 @@
             </a>
         </div>
         @endif
-
     </div>
-
 </div>
 @endif
 
