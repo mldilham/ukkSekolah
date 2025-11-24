@@ -132,7 +132,6 @@
                     <ul>
                         <li>Mengelola Toko</li>
                         <li>Mengelola Produk</li>
-                        <li>Melihat Statistik</li>
                     </ul>
                 </div>
             </div>
@@ -153,9 +152,6 @@
                         </a>
                         <a href="{{ route('member.produks.index') }}" class="list-group-item list-group-item-action">
                             <i class="fas fa-box mr-2"></i> Kelola Produk
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <i class="fas fa-chart-bar mr-2"></i> Lihat Statistik
                         </a>
                         <a href="{{ route('logout') }}" class="list-group-item list-group-item-action text-danger"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
