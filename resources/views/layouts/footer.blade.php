@@ -5,7 +5,7 @@
             <!-- Brand -->
             <div class="col-md-4 mb-4">
                 <h4 class="footer-brand">
-                    <i class="fas fa-store"></i> MarShop
+                    <i class="fas fa-store"></i> MarYpc
                 </h4>
                 <p class="footer-desc">
                     Platform marketplace modern untuk menampilkan produk, toko, dan transaksi via WhatsApp,
@@ -29,8 +29,8 @@
             <div class="col-md-4 mb-4">
                 <h5 class="footer-heading">Kontak</h5>
 
-                <p class="footer-info"><i class="fas fa-map-marker-alt"></i> Bandung, Indonesia</p>
-                <p class="footer-info"><i class="fas fa-envelope"></i> support@marshop.com</p>
+                <p class="footer-info"><i class="fas fa-map-marker-alt"></i> Tasik, Indonesia</p>
+                <p class="footer-info"><i class="fas fa-envelope"></i> gmail@marypc.com</p>
                 <p class="footer-info"><i class="fas fa-phone"></i> +62 812 3456 7890</p>
 
                 <div class="footer-social">

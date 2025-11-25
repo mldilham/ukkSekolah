@@ -3,7 +3,7 @@
 
         <!-- Logo -->
         <a class="navbar-brand font-weight-bold text-primary-custom" href="{{ url('/') }}">
-            <i class="fas fa-store"></i> MarShop
+            <i class="fas fa-store"></i> MarYpc
         </a>
 
         <!-- Toggle Nav (Mobile) -->

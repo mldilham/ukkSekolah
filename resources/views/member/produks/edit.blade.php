@@ -23,7 +23,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Form Edit Produk</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('member.produks.update', $produk->id_produk) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('member.produks.update', Crypt::encrypt($produk->id_produk)) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
