@@ -17,7 +17,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Edit Testimoni</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.testimonis.update', $testimoni) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.testimonis.update', Crypt::encrypt($testimoni->id)) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 

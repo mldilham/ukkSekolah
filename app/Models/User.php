@@ -33,7 +33,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // Relasi: satu user (member) bisa punya banyak toko
     public function tokos()
     {
         return $this->hasMany(Toko::class, 'id_user', 'id_user');
